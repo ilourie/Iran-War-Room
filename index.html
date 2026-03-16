@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operation Epic Fury — Scenario Tracker | Thresher Fixed</title>
+<meta name="description" content="Live scenario tracker for the Iran conflict. Probability-weighted cross-asset framework by Thresher Fixed.">
+<meta property="og:title" content="Operation Epic Fury — Scenario Tracker">
+<meta property="og:description" content="Day-by-day probability-weighted scenario matrix for the Iran conflict.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 24px 16px; min-height: 100vh; }
+  .m { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
+  .wr { background: #fff; color: #0f1a2e; padding: 24px 28px; border-radius: 10px; border: 0.5px solid #d5dce6; max-width: 760px; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
+  .brand { font-size: 12px; color: #1a56db; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .title { font-size: 20px; font-weight: 500; }
+  .sub { font-size: 14px; color: #556275; margin-top: 3px; }
+  .dbg { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 6px 14px; text-align: right; }
+  .dbl { font-size: 11px; color: #556275; }
+  .dbv { font-size: 24px; font-weight: 500; color: #1a56db; }
+
+  .tl { display: flex; margin-bottom: 22px; overflow-x: auto; border-bottom: 0.5px solid #d5dce6; scrollbar-width: none; }
+  .tl::-webkit-scrollbar { display: none; }
+  .tb { flex: 0 0 auto; padding: 8px 12px 10px; font-size: 13px; font-weight: 400; color: #3a4a63; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; transition: color 0.2s; }
+  .tb:hover { color: #1a56db; }
+  .tb.a { color: #1a56db; border-bottom-color: #1a56db; }
+  .td { font-size: 11px; color: #556275; margin-top: 1px; }
+  .tb.a .td { color: #3a4a63; }
+
+  .sg { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 12px; }
+  .sc { background: #fff; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 12px 14px; position: relative; overflow: hidden; }
+  .sb { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .st { font-size: 12px; color: #556275; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .sv { font-size: 26px; font-weight: 500; }
+  .sd { font-size: 12px; margin-left: 6px; }
+  .sl { font-size: 12px; color: #556275; margin-top: 3px; }
+
+  .pb { display: flex; height: 7px; border-radius: 3px; overflow: hidden; background: #eaeff5; }
+  .ps { transition: width 0.4s ease; }
+
+  .lbl { font-size: 13px; color: #3a4a63; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .aw { position: relative; height: 160px; background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; overflow: hidden; }
+  .lg { display: flex; gap: 18px; margin-top: 10px; }
+  .li { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #556275; }
+  .ld { width: 10px; height: 10px; border-radius: 2px; opacity: 0.6; }
+
+  .mg { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 22px; }
+  .mc { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 12px 14px; }
+  .ml { font-size: 12px; color: #556275; letter-spacing: 0.5px; margin-bottom: 5px; }
+  .mr { display: flex; align-items: center; justify-content: space-between; }
+  .mv { font-size: 19px; font-weight: 500; color: #0f1a2e; }
+  .mx { font-size: 12px; margin-left: 6px; }
+
+  .fh { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .ft { font-size: 12px; color: #556275; background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 4px; padding: 5px 12px; cursor: pointer; transition: all 0.2s; }
+  .ft.a { color: #1a56db; background: #e8eefb; border-color: #1a56db; }
+  .fvt { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; overflow: hidden; margin-bottom: 22px; }
+  .fvt table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .fvt th { text-align: right; padding: 10px 12px; font-size: 12px; font-weight: 500; color: #556275; letter-spacing: 0.3px; }
+  .fvt th:first-child { text-align: left; }
+  .fvt td { padding: 10px 12px; text-align: right; color: #3a4a63; }
+  .fvt td:first-child { text-align: left; font-weight: 500; color: #0f1a2e; }
+  .fvt tr { border-bottom: 0.5px solid #d5dce6; }
+  .fvt tbody tr:last-child { border-bottom: none; }
+
+  .el { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 4px 0; }
+  .er { font-size: 14px; padding: 10px 16px; border-bottom: 0.5px solid #d5dce6; display: flex; align-items: flex-start; gap: 12px; }
+  .er:last-child { border-bottom: none; }
+  .en { font-size: 12px; color: #556275; min-width: 18px; margin-top: 2px; }
+  .et { color: #0f1a2e; }
+
+  .fo { font-size: 11px; color: #556275; margin-top: 18px; border-top: 0.5px solid #d5dce6; padding-top: 14px; display: flex; justify-content: space-between; }
+
+  @media (max-width: 600px) {
+    .sg { grid-template-columns: repeat(2,1fr); }
+    .mg { grid-template-columns: 1fr; }
+    .sv { font-size: 22px; }
+    .wr { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wr" id="app"></div>
+<script>
+var DATA=[
+  {day:1,date:"Feb 28",label:"Day 1",s1:50,s2:30,s3:15,s4:5,wti:71.2,gold:5400,spx:6882,events:["Operation Epic Fury launched","US-Israeli joint strikes begin","Hormuz open"],fv:{wti:{s1:62,s2:75,s3:95,s4:70},gold:{s1:5000,s2:5300,s3:5600,s4:5200},spx:{s1:7000,s2:6700,s3:6200,s4:6500},clv6:{s1:60,s2:68,s3:80,s4:65,spot:66}}},
+  {day:3,date:"Mar 2",label:"Day 3",s1:40,s2:35,s3:20,s4:5,wti:76.5,gold:5380,spx:6870,events:["Iran retaliates \u2014 drones hit Dubai, Qatar, Bahrain","Qatar LNG facility struck","Khamenei killed confirmed"],fv:{wti:{s1:65,s2:80,s3:100,s4:75},gold:{s1:4900,s2:5300,s3:5700,s4:5200},spx:{s1:7000,s2:6600,s3:6100,s4:6400},clv6:{s1:62,s2:70,s3:85,s4:68,spot:68}}},
+  {day:5,date:"Mar 4",label:"Day 5",s1:30,s2:40,s3:22,s4:8,wti:82.0,gold:5300,spx:6870,events:["Kuwait friendly fire \u2014 3 US F-15s downed","6 US service members killed","Iran FM rejects ceasefire"],fv:{wti:{s1:68,s2:85,s3:110,s4:78},gold:{s1:4900,s2:5200,s3:5700,s4:5200},spx:{s1:7000,s2:6500,s3:6000,s4:6300},clv6:{s1:63,s2:72,s3:88,s4:70,spot:70}}},
+  {day:7,date:"Mar 6",label:"Day 7",s1:15,s2:45,s3:30,s4:10,wti:88.5,gold:5122,spx:6750,events:["Iran drone attacks down 95%, missiles down 90%","Mojtaba Khamenei named successor","Senate war powers vote fails 47-53"],fv:{wti:{s1:70,s2:88,s3:115,s4:80},gold:{s1:4800,s2:5100,s3:5700,s4:5200},spx:{s1:7000,s2:6450,s3:5900,s4:6200},clv6:{s1:63,s2:74,s3:90,s4:72,spot:74}}},
+  {day:8,date:"Mar 7",label:"Day 8",s1:5,s2:55,s3:30,s4:10,wti:92.0,gold:5100,spx:6700,events:["Trump demands unconditional surrender","Israel deploys 80 jets on Tehran","1,300+ killed in Iran per Red Crescent"],fv:{wti:{s1:70,s2:90,s3:120,s4:82},gold:{s1:4800,s2:5100,s3:5800,s4:5200},spx:{s1:7000,s2:6400,s3:5800,s4:6200},clv6:{s1:64,s2:75,s3:92,s4:72,spot:76}}},
+  {day:10,date:"Mar 9",label:"Day 10",s1:8,s2:50,s3:30,s4:12,wti:119.0,gold:5060,spx:6730,events:["Oil spikes to $119 intraday on Hormuz fears","Mojtaba orders Hormuz to stay closed","IEA announces 400mb reserve release"],fv:{wti:{s1:72,s2:92,s3:130,s4:85},gold:{s1:4800,s2:5100,s3:5900,s4:5300},spx:{s1:7000,s2:6400,s3:5700,s4:6100},clv6:{s1:64,s2:76,s3:95,s4:73,spot:80}}},
+  {day:11,date:"Mar 10",label:"Day 11",s1:10,s2:48,s3:30,s4:12,wti:87.0,gold:5060,spx:6781,events:["Trump hints deal may be close","Oil crashes from $119 to $87","Energy Sec says Navy escorted tanker through Hormuz"],fv:{wti:{s1:70,s2:88,s3:125,s4:82},gold:{s1:4800,s2:5100,s3:5800,s4:5300},spx:{s1:7000,s2:6450,s3:5800,s4:6200},clv6:{s1:64,s2:75,s3:93,s4:72,spot:78}}},
+  {day:13,date:"Mar 12",label:"Day 13",s1:7,s2:48,s3:33,s4:12,wti:95.7,gold:5114,spx:6673,events:["Brent closes above $100 for first time since 2022","All 3 indexes hit 2026 closing lows","Mojtaba confirms Hormuz stays closed"],fv:{wti:{s1:70,s2:90,s3:125,s4:85},gold:{s1:4800,s2:5200,s3:5800,s4:5300},spx:{s1:7000,s2:6400,s3:5800,s4:6100},clv6:{s1:65,s2:76,s3:94,s4:73,spot:82}}},
+  {day:14,date:"Mar 13",label:"Day 14",s1:5,s2:50,s3:30,s4:15,wti:98.7,gold:5114,spx:6672,events:["Trump bombs military targets on Kharg Island","Spares oil infrastructure \u2014 for now","Gold sells off despite war \u2014 paper market flush"],fv:{wti:{s1:70,s2:90,s3:125,s4:85},gold:{s1:4800,s2:5200,s3:5800,s4:5300},spx:{s1:7000,s2:6400,s3:5800,s4:6100},clv6:{s1:65,s2:77,s3:95,s4:73,spot:83}}},
+  {day:16,date:"Mar 15",label:"Day 16",s1:3,s2:45,s3:35,s4:17,wti:99.0,gold:5033,spx:6632,events:["Waltz says Trump weighing Kharg oil strikes","Araghchi opens bilateral Hormuz talks","IEA raises reserve release to 412mb","Internet blackout worsens \u2014 15 days"],fv:{wti:{s1:70,s2:90,s3:125,s4:85},gold:{s1:4800,s2:5200,s3:5800,s4:5300},spx:{s1:7000,s2:6400,s3:5800,s4:6100},clv6:{s1:65,s2:77,s3:95,s4:73,spot:83}}},
+  {day:17,date:"Mar 16",label:"Day 17",s1:2,s2:50,s3:32,s4:16,wti:95.0,gold:4989,spx:6705,events:["Bessent: US letting Iran ship oil through Hormuz","Oil falls to $95 \u2014 trickle of vessels through strait","S&P rallies 1.1%, dollar falls, bonds rally","LME halts ALL contract trading \u2014 systemic stress","BIS warns war could dislodge inflation expectations","Israel expands ground ops in southern Lebanon"],fv:{wti:{s1:68,s2:88,s3:118,s4:82},gold:{s1:4800,s2:5200,s3:5800,s4:5300},spx:{s1:7000,s2:6450,s3:5800,s4:6200},clv6:{s1:64,s2:76,s3:92,s4:72,spot:81}}}
+];
+var FVR=[
+  {asset:"WTI",fk:"wti",sk:"wti",u:"$"},
+  {asset:"Gold",fk:"gold",sk:"gold",u:"$"},
+  {asset:"S&P 500",fk:"spx",sk:"spx",u:"",eq:1},
+  {asset:"CLV6 (Oct)",fk:"clv6",u:"$"}
+];
+var SC={s1:"#1a56db",s2:"#475569",s3:"#7c8da3",s4:"#a8b5c4"};
+var SN={s1:"Swift resolution",s2:"Degraded attrition",s3:"Escalation",s4:"Regime collapse"};
+var idx=DATA.length-1, showPct=false;
+
+function fP(v,u){return u==="$"?(v>=1000?"$"+v.toLocaleString():"$"+v):v.toLocaleString();}
+function fPc(sv,sp){if(!sp)return"\u2014";var p=((sv-sp)/sp)*100;return(p>=0?"+":"")+p.toFixed(1)+"%";}
+function pC(sv,sp,eq){if(!sp)return"#6b7589";var d=sv-sp;if(Math.abs(d/sp)<.005)return"#556275";return eq?(d>0?"#15803d":"#b91c1c"):(d>0?"#b45309":"#15803d");}
+function gI(w,sp){if(!sp)return["\u2014","#6b7589"];var p=((w-sp)/sp)*100;if(Math.abs(p)<3)return["Fair","#556275"];return p>0?["Cheap","#15803d"]:["Rich","#b91c1c"];}
+function wFV(c,f){return Math.round(c.s1/100*f.s1+c.s2/100*f.s2+c.s3/100*f.s3+c.s4/100*f.s4);}
+
+function spk(data,key,col,w,h){
+  var v=data.map(function(d){return d[key];});if(v.length<2)return"";
+  var mn=Math.min.apply(null,v),mx=Math.max.apply(null,v),r=mx-mn||1;
+  var pts=v.map(function(val,i){return(i/(v.length-1))*w+","+(h-3-((val-mn)/r)*(h-6));}).join(" ");
+  var ly=h-3-((v[v.length-1]-mn)/r)*(h-6);
+  return'<svg width="'+w+'" height="'+h+'" style="display:block"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round" opacity="0.7"/><circle cx="'+w+'" cy="'+ly+'" r="2.5" fill="'+col+'"/></svg>';
+}
+function areaS(si){
+  var ss=["s4","s3","s2","s1"],w=700,h=160,p=4,uh=h-p*2,n=DATA.length,cum=DATA.map(function(){return 0;}),paths="";
+  ss.forEach(function(s){var top=[],bot=[];DATA.forEach(function(d,i){var x=n===1?w/2:(i/(n-1))*w;var yb=p+uh-(cum[i]/100)*uh;var yt=p+uh-((cum[i]+d[s])/100)*uh;cum[i]+=d[s];top.push(x+" "+yt);bot.unshift(x+" "+yb);});paths+='<path d="M'+top.join(" L")+" L"+bot.join(" L")+' Z" fill="'+SC[s]+'" opacity="0.45"/>';});
+  var lx=(si/(n-1))*w;paths+='<line x1="'+lx+'" y1="0" x2="'+lx+'" y2="'+h+'" stroke="#1a56db" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>';
+  return'<svg width="100%" height="'+h+'" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">'+paths+'</svg>';
+}
+
+function render(){
+  var c=DATA[idx],pv=idx>0?DATA[idx-1]:null,h='';
+  h+='<div class="hdr"><div><div class="m brand">THRESHER FIXED</div><div class="title">Operation Epic Fury</div><div class="sub">Scenario tracker \u2014 Unstable Equilibria war room</div></div>';
+  h+='<div class="dbg"><div class="m dbl">DAY</div><div class="m dbv">'+c.day+'</div></div></div>';
+
+  h+='<div class="tl m">';DATA.forEach(function(d,i){h+='<button class="tb'+(i===idx?' a':'')+'" onclick="go('+i+')">'+d.label+'<div class="td">'+d.date+'</div></button>';});h+='</div>';
+
+  h+='<div class="sg">';["s1","s2","s3","s4"].forEach(function(s){var p=c[s],pp=pv?pv[s]:null,d=pp!==null?p-pp:null;var dc=d>0?"#15803d":d<0?"#b91c1c":"#6b7589";var ds=d!==null&&d!==0?'<span class="m sd" style="color:'+dc+'">'+(d>0?"+":"")+d+'pp</span>':"";h+='<div class="sc"><div class="sb" style="background:'+SC[s]+'"></div><div class="m st">'+s.toUpperCase()+'</div><div><span class="m sv" style="color:#0f1a2e">'+p+'%</span>'+ds+'</div><div class="sl">'+SN[s]+'</div></div>';});
+  h+='</div>';
+
+  h+='<div class="pb">';["s1","s2","s3","s4"].forEach(function(s){h+='<div class="ps" style="width:'+c[s]+'%;background:'+SC[s]+'"></div>';});h+='</div>';
+
+  h+='<div style="margin:22px 0"><div class="m lbl">PROBABILITY EVOLUTION</div><div class="aw">'+areaS(idx)+'</div>';
+  h+='<div class="lg">';["s1","s2","s3","s4"].forEach(function(s){h+='<div class="li"><div class="ld" style="background:'+SC[s]+'"></div><span class="m">'+s.toUpperCase()+'</span></div>';});h+='</div></div>';
+
+  var mkts=[{k:"wti",l:"WTI CRUDE",col:"#b45309",f:function(v){return"$"+v.toFixed(1);}},{k:"gold",l:"GOLD",col:"#1a56db",f:function(v){return"$"+v.toLocaleString();}},{k:"spx",l:"S&P 500",col:"#1a56db",inv:1,f:function(v){return v.toLocaleString();}}];
+  h+='<div class="m lbl">CROSS-ASSET LEVELS</div><div class="mg">';
+  mkts.forEach(function(m){var cv=c[m.k],pvv=pv?pv[m.k]:null;var pc=pvv?((cv-pvv)/pvv*100):null;var cc=pc===null?"#6b7589":m.inv?(pc>=0?"#15803d":"#b91c1c"):(pc>=0?"#b45309":"#15803d");var pcs=pc!==null?'<span class="m mx" style="color:'+cc+'">'+(pc>=0?"+":"")+pc.toFixed(1)+'%</span>':"";
+  h+='<div class="mc"><div class="m ml">'+m.l+'</div><div class="mr"><div><span class="m mv">'+m.f(cv)+'</span>'+pcs+'</div>'+spk(DATA.slice(0,idx+1),m.k,m.col,70,24)+'</div></div>';});
+  h+='</div>';
+
+  h+='<div class="fh"><div class="m lbl" style="margin:0">SCENARIO FAIR VALUES</div><button class="m ft'+(showPct?' a':'')+'" onclick="tp()">'+(showPct?"% from spot":"Absolute")+'</button></div>';
+  h+='<div class="fvt"><table class="m"><thead><tr>';["","S1","S2","S3","S4","Wtd FV","Spot","Gap"].forEach(function(x){h+='<th>'+x+'</th>';});h+='</tr></thead><tbody>';
+  FVR.forEach(function(r,ri){
+    var fd=c.fv[r.fk];var sp=fd.spot!==undefined?fd.spot:(r.sk?c[r.sk]:null);var wv=wFV(c,fd);var gi=gI(wv,sp);
+    h+='<tr><td>'+r.asset+'</td>';
+    ["s1","s2","s3","s4"].forEach(function(s){var v=fd[s];var cv=showPct?fPc(v,sp):fP(v,r.u);var cc=showPct?pC(v,sp,r.eq):"#3a4a63";h+='<td style="color:'+cc+'">'+cv+'</td>';});
+    var wc=showPct?pC(wv,sp,r.eq):"#0f1a2e";h+='<td style="color:'+wc+';font-weight:500">'+(showPct?fPc(wv,sp):fP(wv,r.u))+'</td>';
+    h+='<td style="color:#556275">'+(sp?fP(Math.round(sp),r.u):"\u2014")+'</td>';
+    h+='<td style="color:'+gi[1]+';font-weight:500">'+gi[0]+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  h+='<div class="m lbl">KEY DEVELOPMENTS \u2014 '+c.label.toUpperCase()+' ('+c.date.toUpperCase()+')</div><div class="el">';
+  c.events.forEach(function(e,i){h+='<div class="er"><span class="m en">'+String(i+1).padStart(2,"0")+'</span><span class="et">'+e+'</span></div>';});
+  h+='</div>';
+
+  h+='<div class="m fo"><span>Not investment advice. Scenario analysis for portfolio risk management.</span><span>thresherfixed.com</span></div>';
+  document.getElementById("app").innerHTML=h;
+}
+function go(i){idx=i;render();}
+function tp(){showPct=!showPct;render();}
+render();
+</script>
+</body>
+</html>
