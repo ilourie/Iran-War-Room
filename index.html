@@ -75,7 +75,7 @@ var idx=D.length-1,showPct=false;
 
 function fP(v,u,dc){dc=dc||0;if(u==="$")return v>=1000?"$"+v.toLocaleString(void 0,{maximumFractionDigits:dc}):"$"+v.toFixed(dc);return v.toLocaleString(void 0,{maximumFractionDigits:dc})}
 function fPc(sv,sp){if(!sp)return"\u2014";var p=((sv-sp)/sp)*100;return(p>=0?"+":"")+p.toFixed(1)+"%"}
-function pC(sv,sp,eq){if(!sp)return"#6b7589";var d=sv-sp;if(Math.abs(d/sp)<.005)return"#556275";return eq?(d>0?"#15803d":"#b91c1c"):(d>0?"#b45309":"#15803d")}
+function pC(sv,sp,eq){if(!sp)return"#6b7589";var d=sv-sp;if(Math.abs(d/sp)<.005)return"#556275";return d>0?"#15803d":"#b91c1c"}
 function gI(w,sp){if(!sp)return["\u2014","#6b7589"];var p=((w-sp)/sp)*100;if(Math.abs(p)<3)return["Fair","#556275"];return p>0?["Cheap","#15803d"]:["Rich","#b91c1c"]}
 function wFV(c,f){return c.s1/100*f.s1+c.s2/100*f.s2+c.s3/100*f.s3+c.s4/100*f.s4}
 function spk(data,key,col,w,h){var v=data.map(function(d){return d[key]});if(v.length<2)return"";var mn=Math.min.apply(null,v),mx=Math.max.apply(null,v),r=mx-mn||1;var pts=v.map(function(val,i){return(i/(v.length-1))*w+","+(h-3-((val-mn)/r)*(h-6))}).join(" ");var ly=h-3-((v[v.length-1]-mn)/r)*(h-6);return'<svg width="'+w+'" height="'+h+'" style="display:block"><polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round" opacity="0.7"/><circle cx="'+w+'" cy="'+ly+'" r="2.5" fill="'+col+'"/></svg>'}
@@ -83,8 +83,8 @@ function aS(si){var ss=["s4","s3","s2","s1"],w=700,ch=160,p=4,uh=ch-p*2,n=D.leng
 ss.forEach(function(s){var top=[],bot=[];D.forEach(function(d,i){var x=n===1?w/2:(i/(n-1))*w;var yb=p+uh-(cum[i]/100)*uh;var yt=p+uh-((cum[i]+d[s])/100)*uh;cum[i]+=d[s];top.push(x+" "+yt);bot.unshift(x+" "+yb)});paths+='<path d="M'+top.join(" L")+" L"+bot.join(" L")+' Z" fill="'+SC[s]+'" opacity="0.45"/>'});
 var lx=(si/(n-1))*w;paths+='<line x1="'+lx+'" y1="0" x2="'+lx+'" y2="'+ch+'" stroke="#1a56db" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>';
 return'<svg width="100%" height="160" viewBox="0 0 700 160" preserveAspectRatio="none">'+paths+'</svg>'}
-function chgBadge(cv,pv,d1v,inv){var h='<div class="cb m">';if(pv!==null){var c1=((cv-pv)/pv)*100;var cc1=Math.abs(c1)<.1?"#6b7589":inv?(c1>0?"#15803d":"#b91c1c"):(c1>0?"#b45309":"#15803d");h+='<span class="cx" style="color:'+cc1+'">1d: '+(c1>=0?"+":"")+c1.toFixed(1)+'%</span>'}
-var cd=((cv-d1v)/d1v)*100;var ccd=Math.abs(cd)<.1?"#6b7589":inv?(cd>0?"#15803d":"#b91c1c"):(cd>0?"#b45309":"#15803d");h+='<span class="cx" style="color:'+ccd+'">D1: '+(cd>=0?"+":"")+cd.toFixed(1)+'%</span></div>';return h}
+function chgBadge(cv,pv,d1v){var h='<div class="cb m">';if(pv!==null){var c1=((cv-pv)/pv)*100;var cc1=Math.abs(c1)<.1?"#6b7589":(c1>0?"#15803d":"#b91c1c");h+='<span class="cx" style="color:'+cc1+'">1d: '+(c1>=0?"+":"")+c1.toFixed(1)+'%</span>'}
+var cd=((cv-d1v)/d1v)*100;var ccd=Math.abs(cd)<.1?"#6b7589":(cd>0?"#15803d":"#b91c1c");h+='<span class="cx" style="color:'+ccd+'">D1: '+(cd>=0?"+":"")+cd.toFixed(1)+'%</span></div>';return h}
 
 function render(){var c=D[idx],pv=idx>0?D[idx-1]:null,h='';
 h+='<div class="hdr"><div><div class="m brand">THRESHER FIXED</div><div class="ttl">Operation Epic Fury</div><div class="sub">Scenario tracker \u2014 Unstable Equilibria war room</div></div>';
@@ -97,7 +97,7 @@ h+='<div style="display:flex;justify-content:space-between;padding:4px 0 0">';D.
 h+='<div class="lg">';["s1","s2","s3","s4"].forEach(function(s){h+='<div class="li"><div class="ld" style="background:'+SC[s]+'"></div><span class="m">'+s.toUpperCase()+'</span></div>'});h+='</div></div>';
 h+='<div class="m lbl">CROSS-ASSET LEVELS</div><div class="mg">';
 MK.forEach(function(m){var cv=c[m.k],pvv=pv?pv[m.k]:null;
-h+='<div class="mc"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="m ml">'+m.l+'</div><span class="m mv">'+m.f(cv)+'</span>'+chgBadge(cv,pvv,D1[m.k],m.inv)+'</div>'+spk(D.slice(0,idx+1),m.k,m.col,70,36)+'</div></div>'});
+h+='<div class="mc"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="m ml">'+m.l+'</div><span class="m mv">'+m.f(cv)+'</span>'+chgBadge(cv,pvv,D1[m.k])+'</div>'+spk(D.slice(0,idx+1),m.k,m.col,70,36)+'</div></div>'});
 h+='</div>';
 h+='<div class="fh"><div class="m lbl" style="margin:0">SCENARIO FAIR VALUES</div><button class="m ft'+(showPct?' a':'')+'" onclick="tp()">'+(showPct?"% from spot":"Absolute")+'</button></div>';
 h+='<div class="fvt"><div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table class="m" style="min-width:580px"><thead><tr>';["","S1","S2","S3","S4","Wtd FV","Spot","Gap"].forEach(function(x){h+='<th>'+x+'</th>'});h+='</tr></thead><tbody>';
