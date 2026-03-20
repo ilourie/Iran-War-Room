@@ -3,583 +3,525 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operation Epic Fury — Thresher Fixed</title>
+<title>KORU / EPV — Pair Trade Scenario Matrix | Thresher Fixed</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; justify-content: center; padding: 24px 16px; }
-  #app { width: 100%; max-width: 780px; background: #fff; border-radius: 10px; border: 0.5px solid #d5dce6; padding: 24px 28px; overflow-x: hidden; }
-  .mono { font-family: "SF Mono", "Fira Code", "Consolas", monospace; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;display:flex;justify-content:center;padding:24px 16px;min-height:100vh}
+.m{font-family:'SF Mono','Fira Code',Consolas,monospace}
+.wr{background:#fff;color:#0f1a2e;padding:24px 28px;border-radius:10px;border:.5px solid #d5dce6;max-width:1080px;width:100%;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 
-  /* header */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
-  .header-label { font-size: 11px; color: #1a56db; letter-spacing: 1.5px; margin-bottom: 4px; }
-  .header-title { font-size: 20px; font-weight: 500; color: #0f1a2e; }
-  .header-sub { font-size: 14px; color: #556275; margin-top: 3px; }
-  .day-badge { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 6px 14px; text-align: right; }
-  .day-badge .day-label { font-size: 11px; color: #556275; }
-  .day-badge .day-num { font-size: 24px; font-weight: 500; color: #1a56db; }
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px}
+.brand{font-size:12px;color:#1a56db;letter-spacing:1.5px;margin-bottom:4px}
+.ttl{font-size:20px;font-weight:500}
+.sub{font-size:14px;color:#556275;margin-top:3px}
+.ts-box{background:#f4f6f9;border:.5px solid #d5dce6;border-radius:6px;padding:6px 14px;text-align:right;white-space:nowrap}
+.tsl{font-size:11px;color:#556275}
+.tsv{font-size:13px;font-weight:500;color:#0f1a2e;margin-top:2px}
 
-  /* timeline */
-  .timeline { display: flex; overflow-x: scroll; overflow-y: visible; border-bottom: 0.5px solid #d5dce6; margin-bottom: 22px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: #d5dce6 transparent; }
-  .timeline::-webkit-scrollbar { height: 3px; }
-  .timeline::-webkit-scrollbar-track { background: transparent; }
-  .timeline::-webkit-scrollbar-thumb { background: #d5dce6; border-radius: 2px; }
-  .tl-btn { flex: 0 0 auto; min-width: 64px; }
-  .tl-btn { flex: 0 0 auto; padding: 8px 12px 10px; font-size: 13px; font-weight: 400; background: transparent; border: none; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; color: #3a4a63; }
-  .tl-btn .tl-date { font-size: 11px; color: #556275; margin-top: 1px; }
-  .tl-btn.active { color: #1a56db; border-bottom-color: #1a56db; }
-  .tl-btn.active .tl-date { color: #3a4a63; }
-  .today-pip { display: inline-block; font-size: 9px; background: #1a56db; color: #fff; border-radius: 3px; padding: 1px 5px; margin-left: 5px; letter-spacing: 0.4px; vertical-align: middle; }
-  .tl-btn.today:not(.active) .today-pip { background: #d5dce6; color: #556275; }
+.ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.panel{background:#f4f6f9;border:.5px solid #d5dce6;border-radius:6px;padding:14px 16px}
+.panel-lbl{font-size:11px;color:#556275;letter-spacing:.5px;margin-bottom:12px}
 
-  /* scenario cards */
-  .sc-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 8px; margin-bottom: 12px; }
-  .sc-card { background: #fff; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 12px 14px; position: relative; overflow: hidden; }
-  .sc-card .sc-stripe { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
-  .sc-tag { font-size: 12px; color: #556275; letter-spacing: 0.5px; margin-bottom: 3px; }
-  .sc-prob { font-size: 26px; font-weight: 500; color: #0f1a2e; display: inline; }
-  .sc-delta { font-size: 12px; margin-left: 6px; }
-  .sc-label { font-size: 12px; color: #556275; margin-top: 3px; }
+.sizing-input-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.sizing-input-row label{font-size:13px;color:#556275;min-width:130px}
+.sizing-input-row input[type=number]{background:#fff;border:.5px solid #b0bac8;border-radius:4px;color:#0f1a2e;font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:20px;font-weight:500;width:70px;padding:5px 8px;text-align:center;-moz-appearance:textfield}
+.sizing-input-row input[type=number]::-webkit-outer-spin-button,.sizing-input-row input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.sizing-input-row input[type=number]:focus{outline:none;border-color:#1a56db}
+.sizing-input-row .unit{font-size:13px;color:#556275}
+.sizing-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:8px}
+.sizing-table th{text-align:left;font-size:10px;font-weight:500;color:#8a96a8;letter-spacing:.5px;padding:4px 8px 4px 0;border-bottom:.5px solid #d5dce6}
+.sizing-table td{padding:5px 8px 5px 0;color:#3a4a63;vertical-align:middle}
+.sizing-table .val{font-family:'SF Mono','Fira Code',Consolas,monospace;font-weight:500;color:#0f1a2e}
+.sizing-table .sub-val{font-size:11px;color:#556275}
+.dot-koru{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1a56db;margin-right:5px}
+.dot-epv{display:inline-block;width:7px;height:7px;border-radius:50%;background:#d97706;margin-right:5px}
+.dot-tot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#556275;margin-right:5px}
+.equal-note{font-size:10px;color:#15803d;margin-top:4px;font-style:italic}
 
-  /* prob bar */
-  .prob-bar { display: flex; height: 7px; border-radius: 3px; overflow: hidden; background: #eaeff5; margin-bottom: 22px; }
-  .prob-seg { transition: width 0.4s ease; }
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prob-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+.prob-name{font-size:11px;color:#556275}
+.prob-val{font-size:14px;font-weight:500;min-width:36px;text-align:right}
+.prob-sub{font-size:10px;color:#8a96a8;margin-bottom:4px}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;border-radius:2px;background:#d5dce6;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;cursor:pointer;border:none}
+input[type=range].s2a::-webkit-slider-thumb{background:#b45309}
+input[type=range].s2b::-webkit-slider-thumb{background:#1a56db}
+input[type=range].s3::-webkit-slider-thumb{background:#c2410c}
+input[type=range].s4::-webkit-slider-thumb{background:#b91c1c}
+.prob-total-row{display:flex;align-items:baseline;gap:8px;margin-top:12px;padding-top:10px;border-top:.5px solid #d5dce6}
+.prob-total-label{font-size:12px;color:#556275}
+.prob-total-val{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:22px;font-weight:500;color:#0f1a2e;min-width:60px}
 
-  /* section head */
-  .section-head { font-size: 13px; color: #3a4a63; letter-spacing: 0.5px; margin-bottom: 10px; }
+.alert{background:#fff8f0;border:.5px solid #fdba74;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#7c2d12;line-height:1.6}
+.alert strong{font-weight:500;color:#c2410c}
+.alert-date{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:10px;color:#b45309;letter-spacing:.5px;margin-bottom:4px}
 
-  /* prob evolution */
-  .prob-evo { margin-top: 22px; margin-bottom: 22px; }
-  .prob-chart-wrap { position: relative; height: 160px; background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; overflow: hidden; }
-  .prob-dates { display: flex; justify-content: space-between; padding: 4px 0 0; margin-bottom: 2px; }
-  .prob-date-label { font-size: 10px; color: #556275; text-align: center; flex: 0 0 auto; }
-  .legend { display: flex; gap: 18px; margin-top: 10px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #556275; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; opacity: 0.6; }
+.er-bar{background:#f0f5ff;border:.5px solid #1a56db;border-radius:6px;padding:14px 20px;margin-bottom:14px;display:flex;align-items:stretch;gap:0;flex-wrap:wrap}
+.er-seg{flex:1;min-width:160px;padding:0 20px}
+.er-seg:first-child{padding-left:0}
+.er-divider{width:.5px;background:#c7d7f4;flex-shrink:0}
+.er-seg-lbl{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:9px;color:#1a56db;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.er-seg-val{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:30px;font-weight:500;line-height:1}
+.er-seg-sub{font-size:12px;color:#556275;margin-top:4px}
+.er-note{font-size:11px;color:#556275;line-height:1.5;flex:1.2;min-width:200px;padding-left:20px;align-self:center}
 
-  /* markets */
-  .markets-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 22px; }
-  .mkt-card { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 12px 14px; }
-  .mkt-inner { display: flex; justify-content: space-between; align-items: flex-start; }
-  .mkt-label { font-size: 11px; color: #556275; letter-spacing: 0.5px; margin-bottom: 5px; }
-  .mkt-value { font-size: 19px; font-weight: 500; color: #0f1a2e; }
-  .mkt-changes { display: flex; gap: 8px; margin-top: 4px; }
-  .chg-badge { font-size: 11px; }
+.er-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.er-card{background:#fff;border:.5px solid #d5dce6;border-radius:6px;padding:12px 14px;position:relative;overflow:hidden}
+.er-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.er-card.koru::before{background:#1a56db}
+.er-card.epv::before{background:#d97706}
+.er-card.port::before{background:#15803d}
+.er-card.risk::before{background:#b91c1c}
+.er-lbl{font-size:11px;color:#556275;letter-spacing:.5px;margin-bottom:5px}
+.er-val{font-size:24px;font-weight:500;color:#0f1a2e}
+.er-sub{font-size:11px;color:#556275;margin-top:3px}
 
-  /* fv table */
-  .fv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .fv-wrap { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; overflow: hidden; margin-bottom: 22px; }
-  .fv-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 14px; }
-  th { text-align: right; padding: 10px 12px; font-size: 12px; font-weight: 500; color: #556275; border-bottom: 0.5px solid #d5dce6; }
-  th:first-child { text-align: left; }
-  td { text-align: right; padding: 10px 12px; color: #3a4a63; }
-  td:first-child { text-align: left; font-weight: 500; color: #0f1a2e; }
-  tr:not(:last-child) td { border-bottom: 0.5px solid #d5dce6; }
+.tl{display:flex;margin-bottom:18px;border-bottom:.5px solid #d5dce6}
+.tb{flex:0 0 auto;padding:8px 14px 10px;font-size:13px;color:#556275;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tb:hover{color:#1a56db}.tb.a{color:#1a56db;border-bottom-color:#1a56db}
 
-  /* pct toggle btn */
-  .pct-btn { font-size: 12px; border-radius: 4px; padding: 5px 12px; cursor: pointer; transition: all 0.2s; border: 0.5px solid #d5dce6; background: #f4f6f9; color: #556275; }
-  .pct-btn.active { color: #1a56db; background: #e8eefb; border-color: #1a56db; }
+/* scenario table */
+.fvt{background:#fff;border:.5px solid #d5dce6;border-radius:6px;overflow:hidden;margin-bottom:14px}
+.fvt table{width:100%;border-collapse:collapse;font-size:12px}
+.fvt th.top{text-align:left;padding:8px 10px 2px;font-size:10px;font-weight:500;color:#556275;letter-spacing:.5px;background:#f8f9fb;white-space:nowrap;border-bottom:none}
+.fvt th.sub{text-align:left;padding:0px 10px 7px;font-size:9px;font-weight:400;color:#b0bac8;letter-spacing:.2px;background:#f8f9fb;border-bottom:.5px solid #d5dce6;white-space:nowrap}
+/* scenario cell: numbers on top, mechanic below */
+.fvt td{padding:0;border-bottom:.5px solid #d5dce6;vertical-align:top;color:#3a4a63}
+.fvt tbody tr:last-child td{border-bottom:none}
+.fvt tbody tr:hover td{background:#fafbfc}
+.fvt tbody tr.row-s2a .sc-name-cell{border-left:2px solid #b45309}
+.fvt tbody tr.row-s2b .sc-name-cell{border-left:2px solid #1a56db}
+.fvt tbody tr.row-s3  .sc-name-cell{border-left:2px solid #c2410c}
+.fvt tbody tr.row-s4  .sc-name-cell{border-left:2px solid #b91c1c}
+/* top data row inside each scenario */
+.fvt .data-row td{padding:10px 10px 4px;border-bottom:none}
+.fvt .mech-row td{padding:0 10px 10px;border-bottom:none;font-size:11px;color:#8a96a8;line-height:1.5}
+.fvt .mech-row td strong{color:#556275;font-weight:500}
+.fvt .mech-row .mech-span{background:#f8f9fb;border-radius:3px;padding:4px 8px;display:inline-block;font-size:11px;color:#556275;line-height:1.5;margin-top:0}
+.fvt tfoot td{padding:8px 10px;border-top:1px solid #d5dce6;background:#f8f9fb;font-weight:500}
 
-  /* events */
-  .events-wrap { background: #f4f6f9; border: 0.5px solid #d5dce6; border-radius: 6px; padding: 4px 0; }
-  .evt-row { font-size: 14px; padding: 10px 16px; border-bottom: 0.5px solid #d5dce6; display: flex; align-items: flex-start; gap: 12px; }
-  .evt-row:last-child { border-bottom: none; }
-  .evt-num { font-size: 12px; color: #556275; min-width: 18px; margin-top: 2px; }
-  .evt-text { color: #0f1a2e; }
+.s-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;flex-shrink:0;margin-top:3px}
+.s-cell{display:flex;align-items:flex-start}
+.s-name{font-weight:500;font-size:12px;color:#0f1a2e}
+.s-sub{font-size:10px;color:#8a96a8;margin-top:2px}
+.ret-range{font-size:10px;color:#b0bac8;line-height:1.4;margin-bottom:1px}
+.ret-mid{font-size:14px;font-weight:500;line-height:1.2}
 
-  /* footer */
-  .footer { font-size: 11px; color: #556275; margin-top: 18px; border-top: 0.5px solid #d5dce6; padding-top: 14px; display: flex; justify-content: space-between; }
+.pos{color:#15803d}.neg{color:#b91c1c}.mix{color:#b45309}.neu{color:#556275}
 
-  /* gold discount note */
-  .gold-note { font-size: 11px; color: #b45309; background: #fffbeb; border: 0.5px solid #fde68a; border-radius: 4px; padding: 4px 8px; margin-left: 8px; display: inline-block; vertical-align: middle; }
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.path-card{background:#f4f6f9;border:.5px solid #d5dce6;border-radius:6px;padding:14px 16px}
+.path-card.best{background:#f0fdf4;border-color:#86efac}
+.path-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.path-meta{flex:1}
+.path-scen{font-size:11px;color:#8a96a8;margin-bottom:2px}
+.path-desc{font-size:13px;font-weight:500;color:#0f1a2e}
+.path-total{font-size:28px;font-weight:500;white-space:nowrap}
+.path-breakdown{font-size:11px;color:#8a96a8;border-top:.5px solid #d5dce6;padding-top:8px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.best-badge{font-size:10px;padding:2px 7px;border-radius:3px;background:#dcfce7;color:#15803d;border:.5px solid #86efac;white-space:nowrap;align-self:flex-start}
+.info-box{border-left:2px solid #1a56db;background:#f0f5ff;border-radius:0 4px 4px 0;padding:10px 14px;font-size:12px;color:#3a4a63;line-height:1.6;margin-bottom:14px}
+.info-box strong{color:#1a56db;font-weight:500}
+.warn-box{border-left:2px solid #b45309;background:#fffbeb;border-radius:0 4px 4px 0;padding:10px 14px;font-size:12px;color:#3a4a63;line-height:1.6;margin-top:14px}
+.warn-box strong{color:#b45309;font-weight:500}
+.lbl{font-size:12px;color:#556275;letter-spacing:.5px;margin-bottom:10px}
+.fo{font-size:11px;color:#8a96a8;margin-top:18px;border-top:.5px solid #d5dce6;padding-top:14px;display:flex;justify-content:space-between;gap:16px}
+
+@media(max-width:750px){
+  .ctrl-grid{grid-template-columns:1fr}
+  .er-grid{grid-template-columns:repeat(2,1fr)}
+  .path-grid{grid-template-columns:1fr}
+  .er-bar{flex-direction:column;gap:12px}
+  .er-divider{width:100%;height:.5px}
+  .er-note{padding-left:0}
+  .wr{padding:16px}
+}
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div class="wr">
+
+<div class="hdr">
+  <div>
+    <div class="m brand">THRESHER FIXED</div>
+    <div class="ttl">KORU / EPV — Pair Trade Scenario Matrix</div>
+    <div class="sub">Long KORU (3×) / Long EPV (2× inverse) &nbsp;·&nbsp; Iran conflict Day 21 &nbsp;·&nbsp; Two-phase: active → resolution</div>
+  </div>
+  <div class="ts-box">
+    <div class="m tsl">UPDATED</div>
+    <div class="m tsv" id="ts">—</div>
+  </div>
+</div>
+
+<div class="alert">
+  <div class="alert-date">MAR 20 · DAY 21 UPDATES</div>
+  <strong>S3 dominant — South Pars strike changes scope.</strong> Israel hit South Pars Mar 18 (first upstream energy infrastructure targeted). Brent briefly $119. Qatar LNG suspended since Mar 2; Ras Laffan struck Mar 19 — "extensive damage." Iran issued retaliatory target list (Aramco Samref, Jubail, Al Hosn). Mojtaba: Hormuz "will not return to pre-war conditions." Counter-signal: Netanyahu "may end sooner than people think"; Trump told Netanyahu to halt oil/gas infrastructure strikes. UK sending military planners. Net: S3/S4 drift. Probabilities revised: S3 45%, S4 25%, S2a 20%, S2b 10%.
+</div>
+
+<div class="ctrl-grid">
+  <div class="panel">
+    <div class="m panel-lbl">POSITION SIZING</div>
+    <div class="sizing-input-row">
+      <label>Capital committed</label>
+      <input type="number" id="notional" value="10" min="1" max="100" step="1">
+      <span class="unit">% of portfolio</span>
+    </div>
+    <table class="sizing-table">
+      <thead><tr><th>Leg</th><th>Weight</th><th>Capital %</th><th>Leverage</th><th>Gross notional</th></tr></thead>
+      <tbody>
+        <tr><td><span class="dot-koru"></span>KORU</td><td class="sub-val">40%</td><td class="val" id="sz-koru-cap">4.0%</td><td class="sub-val">3×</td><td class="val" id="sz-koru-gn">12.0%</td></tr>
+        <tr><td><span class="dot-epv"></span>EPV</td><td class="sub-val">60%</td><td class="val" id="sz-epv-cap">6.0%</td><td class="sub-val">2×</td><td class="val" id="sz-epv-gn">12.0%</td></tr>
+        <tr style="border-top:.5px solid #d5dce6"><td><span class="dot-tot"></span><strong>Total</strong></td><td class="sub-val">100%</td><td class="val" id="sz-tot-cap">10.0%</td><td class="sub-val">—</td><td class="val" style="color:#0f1a2e;font-weight:600" id="sz-tot-gn">24.0%</td></tr>
+      </tbody>
+    </table>
+    <div class="equal-note" id="equal-note">✓ Both legs contribute equal gross notional</div>
+  </div>
+  <div class="panel">
+    <div class="m panel-lbl">PHASE 1 SCENARIO PROBABILITIES</div>
+    <div class="prob-grid">
+      <div>
+        <div class="prob-header"><span class="m prob-name" style="color:#b45309">S2a — hot simmer</span><span class="m prob-val" style="color:#b45309" id="lbl-s2a">20%</span></div>
+        <div class="prob-sub">Oil $95–110 · Hormuz contested</div>
+        <input type="range" class="s2a" min="0" max="70" value="20" step="5" id="sl-s2a">
+      </div>
+      <div>
+        <div class="prob-header"><span class="m prob-name" style="color:#1a56db">S2b — slow simmer</span><span class="m prob-val" style="color:#1a56db" id="lbl-s2b">10%</span></div>
+        <div class="prob-sub">Oil $80–90 · Talks begin</div>
+        <input type="range" class="s2b" min="0" max="70" value="10" step="5" id="sl-s2b">
+      </div>
+      <div>
+        <div class="prob-header"><span class="m prob-name" style="color:#c2410c">S3 — prolonged</span><span class="m prob-val" style="color:#c2410c" id="lbl-s3">45%</span></div>
+        <div class="prob-sub">Oil $110–130 · Months long</div>
+        <input type="range" class="s3" min="0" max="70" value="45" step="5" id="sl-s3">
+      </div>
+      <div>
+        <div class="prob-header"><span class="m prob-name" style="color:#b91c1c">S4 — full war</span><span class="m prob-val" style="color:#b91c1c" id="lbl-s4">25%</span></div>
+        <div class="prob-sub">Oil $140–160+ · Recession</div>
+        <input type="range" class="s4" min="0" max="70" value="25" step="5" id="sl-s4">
+      </div>
+    </div>
+    <div class="prob-total-row">
+      <span class="prob-total-label m">TOTAL</span>
+      <span class="m prob-total-val" id="total-prob">100%</span>
+      <span style="font-size:11px;display:none;color:#b91c1c;margin-left:4px" id="prob-warn">≠ 100% — shown as-is</span>
+      <span style="font-size:11px;color:#556275;margin-left:4px" id="prob-ok">✓</span>
+    </div>
+  </div>
+</div>
+
+<!-- ER BAR -->
+<div class="er-bar">
+  <div class="er-seg">
+    <div class="er-seg-lbl">Phase 1 + 2 expected return</div>
+    <div class="er-seg-val" id="er-combined-val">—</div>
+    <div class="er-seg-sub">on allocated notional (prob weighted)</div>
+  </div>
+  <div class="er-divider"></div>
+  <div class="er-seg">
+    <div class="er-seg-lbl">Portfolio contribution</div>
+    <div class="er-seg-val" id="er-port-val">—</div>
+    <div class="er-seg-sub" id="er-port-sub">of total portfolio</div>
+  </div>
+  <div class="er-divider"></div>
+  <div class="er-note">Phase 1 + Phase 2 (resolution) combined, probability-weighted at scenario midpoints. Phase 2 is additive — see Combined tab for path-by-path breakdown.</div>
+</div>
+
+<div class="er-grid">
+  <div class="er-card koru"><div class="m er-lbl">KORU ER</div><div class="m er-val" id="er-koru">—</div><div class="er-sub">on allocated notional</div></div>
+  <div class="er-card epv"><div class="m er-lbl">EPV ER</div><div class="m er-val" id="er-epv">—</div><div class="er-sub">on allocated notional</div></div>
+  <div class="er-card port"><div class="m er-lbl">PHASE 1 ONLY ER</div><div class="m er-val" id="er-p1">—</div><div class="er-sub" id="er-p1-sub">on 10% notional</div></div>
+  <div class="er-card risk"><div class="m er-lbl">KORU RISK SHARE</div><div class="m er-val" style="color:#b91c1c">~69%</div><div class="er-sub">of vol on 40% capital</div></div>
+</div>
+
+<div class="tl">
+  <button class="tb a" onclick="showTab('p1',this)">Phase 1 — active conflict</button>
+  <button class="tb" onclick="showTab('p2',this)">Phase 2 — resolution (additive)</button>
+  <button class="tb" onclick="showTab('combined',this)">Combined path P&amp;L</button>
+</div>
+
+<!-- ══ PHASE 1 ══ -->
+<div id="tab-p1">
+<div class="fvt"><div style="overflow-x:auto"><table>
+<thead>
+<tr>
+  <th class="top" style="width:16%">Scenario</th>
+  <th class="top" style="width:6%">Prob</th>
+  <th class="top" style="width:7%">Oil</th>
+  <th class="top" style="width:10%">KORU return</th>
+  <th class="top" style="width:10%">EPV return</th>
+  <th class="top" style="width:11%">P&amp;L (%)</th>
+  <th class="top" style="width:12%">Portfolio P&amp;L</th>
+  <th class="top" style="width:12%">Portfolio ER</th>
+</tr>
+<tr>
+  <th class="sub"></th>
+  <th class="sub"></th>
+  <th class="sub"></th>
+  <th class="sub">mid return</th>
+  <th class="sub">mid return</th>
+  <th class="sub">40% KORU + 60% EPV</th>
+  <th class="sub">P&amp;L × capital committed</th>
+  <th class="sub">Portfolio P&amp;L × scenario prob</th>
+</tr>
+</thead>
+<tbody id="p1-body"></tbody>
+<tfoot>
+<tr>
+  <td colspan="7" class="m" style="font-size:11px;color:#556275;text-align:right;padding-right:10px">Phase 1 total portfolio ER →</td>
+  <td class="m pos" id="er-p1-total" style="font-size:15px;padding:8px 10px">—</td>
+</tr>
+</tfoot>
+</table></div></div>
+</div>
+
+<!-- ══ PHASE 2 ══ -->
+<div id="tab-p2" style="display:none">
+<div class="info-box"><strong>Phase 2 is additive and conditional.</strong> Returns are <em>incremental</em> to Phase 1 P&L, estimated from the Phase 1 exit level. Same column structure as Phase 1 — KORU and EPV returns are the Phase 2 incremental moves from the Phase 1 ending level. Same scenario probabilities apply. ECB hike story is load-bearing: without it, VGK rips 25–35% on resolution. With ECB tightening resuming, VGK is capped at +12–18%, keeping EPV losses manageable.</div>
+<div class="fvt"><div style="overflow-x:auto"><table>
+<thead>
+<tr>
+  <th class="top" style="width:16%">Entry state → S5</th>
+  <th class="top" style="width:6%">Prob</th>
+  <th class="top" style="width:7%">Oil res.</th>
+  <th class="top" style="width:10%">KORU Phase 2</th>
+  <th class="top" style="width:10%">EPV Phase 2</th>
+  <th class="top" style="width:11%">P&amp;L (%)</th>
+  <th class="top" style="width:12%">Portfolio P&amp;L</th>
+  <th class="top" style="width:12%">Portfolio ER</th>
+</tr>
+<tr>
+  <th class="sub"></th>
+  <th class="sub"></th>
+  <th class="sub"></th>
+  <th class="sub">incremental mid</th>
+  <th class="sub">incremental mid</th>
+  <th class="sub">40% KORU + 60% EPV</th>
+  <th class="sub">P&amp;L × capital committed</th>
+  <th class="sub">Portfolio P&amp;L × scenario prob</th>
+</tr>
+</thead>
+<tbody id="p2-body"></tbody>
+<tfoot>
+<tr>
+  <td colspan="7" class="m" style="font-size:11px;color:#556275;text-align:right;padding-right:10px">Phase 2 total portfolio ER →</td>
+  <td class="m pos" id="er-p2-total" style="font-size:15px;padding:8px 10px">—</td>
+</tr>
+</tfoot>
+</table></div></div>
+<div class="warn-box"><strong>Sizing shift at resolution:</strong> Phase 1 (40% KORU / 60% EPV) is EPV-dominant by design. When the transition signal appears — ceasefire credible, Hormuz reopening, oil below $90 — rotate Phase 1 EPV gains into KORU. Phase 2 is KORU-dominant. The rebalancing at the inflection is where the incremental alpha lives.</div>
+</div>
+
+<!-- ══ COMBINED ══ -->
+<div id="tab-combined" style="display:none">
+<div class="m lbl">COMBINED P&amp;L — PHASE 1 + PHASE 2 (ADDITIVE) &nbsp;·&nbsp; % OF ALLOCATED NOTIONAL</div>
+<div class="path-grid" id="path-grid"></div>
+<div class="info-box" style="border-color:#15803d;background:#f0fdf4"><strong style="color:#15803d">Structural finding:</strong> S3 → S5 is the best risk-adjusted combined path at current probabilities (45% weight). Prolonged war lets EPV compound in Phase 1; KORU snaps back hard on resolution. South Pars deepens the KORU Phase 1 trough, amplifying the Phase 2 gain. S4 → S5 has higher total return but requires surviving KORU gap risk in Phase 1. Every combined path is positive — the trade is robust to sequencing.</div>
+</div>
+
+<div class="m fo">
+  <span>Not investment advice. Scenario analysis for portfolio risk management.</span>
+  <span>thresherfixed.com</span>
+</div>
+</div>
+
 <script>
-"use strict";
+// ── data ──
+var probs={s2a:20,s2b:10,s3:45,s4:25};
 
-// Gold FVs discounted 10% from recalibrated model (retail fervor + negative momentum adjustment)
-// All other asset FVs unchanged from recalibrated model
-const DATA = [
-  {
-    day: 1, date: "Feb 28", label: "Day 1",
-    s1: 50, s2: 30, s3: 15, s4: 5,
-    wti: 67.02, brent: 72.00, gold: 5247.9, spx: 6878.88, spread: 2.27,
-    events: ["Operation Epic Fury launched", "US-Israeli joint strikes begin", "Hormuz open"],
-    fv: {
-      wti:    { s1: 62,   s2: 75,   s3: 95,   s4: 70   },
-      brent:  { s1: 64,   s2: 78,   s3: 100,  s4: 73   },
-      gold:   { s1: 4800, s2: 5300, s3: 5800, s4: 5500 },
-      spx:    { s1: 7000, s2: 6700, s3: 6200, s4: 6500 },
-      spread: { s1: 1,    s2: 4,    s3: 10,   s4: 3    }
-    }
+var sc={
+  s2a:{
+    name:'S2a — hot simmer', sub:'Conflict ongoing. Hormuz contested.',
+    dot:'#b45309', prob_color:'#b45309',
+    oil:'$95–110',
+    koru:{range:'−10→−25%', mid:-17.5},
+    epv:{range:'+20→+35%', mid:27.5},
+    mech:'EPV on energy differential. <strong>ECB hike path activating</strong> — rate headwind compresses VGK multiple even before resolution. South Pars strike makes this path less likely but still possible if Trump restrains Israel further.'
   },
-  {
-    day: 3, date: "Mar 2", label: "Day 3",
-    s1: 40, s2: 35, s3: 20, s4: 5,
-    wti: 71.23, brent: 74.81, gold: 5311.6, spx: 6881.62, spread: 4.54,
-    events: ["Iran retaliates — drones hit Dubai, Qatar, Bahrain", "Qatar LNG facility struck", "Khamenei killed confirmed"],
-    fv: {
-      wti:    { s1: 65,   s2: 80,   s3: 100,  s4: 75   },
-      brent:  { s1: 67,   s2: 83,   s3: 105,  s4: 79   },
-      gold:   { s1: 4800, s2: 5200, s3: 5900, s4: 5500 },
-      spx:    { s1: 7000, s2: 6600, s3: 6100, s4: 6400 },
-      spread: { s1: 2,    s2: 6,    s3: 14,   s4: 4    }
-    }
+  s2b:{
+    name:'S2b — slow simmer', sub:'Ceasefire talks. Oil easing.',
+    dot:'#1a56db', prob_color:'#1a56db',
+    oil:'$80–90',
+    koru:{range:'+15→+30%', mid:22.5},
+    epv:{range:'−10→−20%', mid:-15},
+    mech:'Netanyahu\'s "sooner than people think" is the S2b signal. Fragile — Iran\'s "will not return to pre-war conditions" argues against. <strong>ECB limits EPV bleed</strong> — caps VGK rally at +12–18% vs +25–35% without tightening.'
   },
-  {
-    day: 5, date: "Mar 4", label: "Day 5",
-    s1: 30, s2: 40, s3: 22, s4: 8,
-    wti: 74.66, brent: 75.93, gold: 5134.7, spx: 6869.50, spread: 6.24,
-    events: ["Kuwait friendly fire — 3 US F-15s downed", "6 US service members killed", "Iran FM rejects ceasefire"],
-    fv: {
-      wti:    { s1: 68,   s2: 85,   s3: 110,  s4: 78   },
-      brent:  { s1: 70,   s2: 88,   s3: 115,  s4: 82   },
-      gold:   { s1: 4800, s2: 5200, s3: 5900, s4: 5500 },
-      spx:    { s1: 7000, s2: 6500, s3: 6000, s4: 6300 },
-      spread: { s1: 2,    s2: 8,    s3: 16,   s4: 5    }
-    }
+  s3:{
+    name:'S3 — prolonged', sub:'Current trajectory. South Pars embedded.',
+    dot:'#c2410c', prob_color:'#c2410c',
+    oil:'$110–130',
+    koru:{range:'−30→−50%', mid:-40},
+    epv:{range:'+40→+65%', mid:52.5},
+    mech:'<strong>EPV is the engine.</strong> Qatar LNG suspended since Mar 2; Ras Laffan hit Mar 19. European gas €61/MWh. IEA 400mb release buying weeks not months. ECB pauses on stagflation — EPV wins through the energy channel.'
   },
-  {
-    day: 7, date: "Mar 6", label: "Day 7",
-    s1: 15, s2: 45, s3: 30, s4: 10,
-    wti: 90.90, brent: 82.88, gold: 5158.7, spx: 6740.02, spread: 16.11,
-    events: ["Iran drone attacks down 95%, missiles down 90%", "Mojtaba Khamenei named successor", "Senate war powers vote fails 47-53"],
-    fv: {
-      wti:    { s1: 70,   s2: 88,   s3: 115,  s4: 80   },
-      brent:  { s1: 72,   s2: 92,   s3: 120,  s4: 84   },
-      gold:   { s1: 4800, s2: 5200, s3: 6000, s4: 5500 },
-      spx:    { s1: 7000, s2: 6450, s3: 5900, s4: 6200 },
-      spread: { s1: 3,    s2: 12,   s3: 20,   s4: 6    }
-    }
-  },
-  {
-    day: 10, date: "Mar 9", label: "Day 10",
-    s1: 8, s2: 50, s3: 30, s4: 12,
-    wti: 94.77, brent: 88.95, gold: 5103.7, spx: 6795.99, spread: 17.46,
-    events: ["Oil spikes to $119 intraday on Hormuz fears", "Mojtaba orders Hormuz to stay closed", "IEA announces 400mb reserve release"],
-    fv: {
-      wti:    { s1: 72,   s2: 92,   s3: 130,  s4: 85   },
-      brent:  { s1: 75,   s2: 96,   s3: 135,  s4: 89   },
-      gold:   { s1: 4800, s2: 5200, s3: 6100, s4: 5500 },
-      spx:    { s1: 7000, s2: 6400, s3: 5700, s4: 6100 },
-      spread: { s1: 3,    s2: 14,   s3: 24,   s4: 7    }
-    }
-  },
-  {
-    day: 11, date: "Mar 10", label: "Day 11",
-    s1: 10, s2: 48, s3: 30, s4: 12,
-    wti: 83.45, brent: 82.60, gold: 5242.1, spx: 6781.48, spread: 10.64,
-    events: ["Trump hints deal may be close", "Oil crashes from $119 to $87", "Energy Sec says Navy escorted tanker through Hormuz"],
-    fv: {
-      wti:    { s1: 70,   s2: 88,   s3: 125,  s4: 82   },
-      brent:  { s1: 73,   s2: 92,   s3: 130,  s4: 86   },
-      gold:   { s1: 4800, s2: 5100, s3: 6000, s4: 5500 },
-      spx:    { s1: 7000, s2: 6450, s3: 5800, s4: 6200 },
-      spread: { s1: 3,    s2: 12,   s3: 22,   s4: 6    }
-    }
-  },
-  {
-    day: 13, date: "Mar 12", label: "Day 13",
-    s1: 7, s2: 48, s3: 33, s4: 12,
-    wti: 95.73, brent: 92.88, gold: 5125.8, spx: 6672.62, spread: 15.54,
-    events: ["Brent closes above $100 for first time since 2022", "All 3 indexes hit 2026 closing lows", "Mojtaba confirms Hormuz stays closed"],
-    fv: {
-      wti:    { s1: 70,   s2: 90,   s3: 125,  s4: 85   },
-      brent:  { s1: 73,   s2: 94,   s3: 130,  s4: 89   },
-      gold:   { s1: 4800, s2: 5200, s3: 6100, s4: 5500 },
-      spx:    { s1: 7000, s2: 6400, s3: 5800, s4: 6100 },
-      spread: { s1: 3,    s2: 13,   s3: 22,   s4: 7    }
-    }
-  },
-  {
-    day: 14, date: "Mar 13", label: "Day 14",
-    s1: 5, s2: 50, s3: 30, s4: 15,
-    wti: 98.71, brent: 94.67, gold: 5061.7, spx: 6632.19, spread: 16.76,
-    events: ["Trump bombs military targets on Kharg Island", "Spares oil infrastructure — for now", "Gold sells off despite war — paper market flush"],
-    fv: {
-      wti:    { s1: 70,   s2: 90,   s3: 125,  s4: 85   },
-      brent:  { s1: 73,   s2: 94,   s3: 132,  s4: 89   },
-      gold:   { s1: 4700, s2: 5200, s3: 6100, s4: 5500 },
-      spx:    { s1: 7000, s2: 6400, s3: 5800, s4: 6100 },
-      spread: { s1: 3,    s2: 13,   s3: 23,   s4: 7    }
-    }
-  },
-  {
-    day: 17, date: "Mar 16", label: "Day 17",
-    s1: 2, s2: 52, s3: 29, s4: 17,
-    wti: 93.50, brent: 91.76, gold: 5002.2, spx: 6699.38, spread: 14.79,
-    events: [
-      "Bessent: US letting Iran ship oil through Hormuz",
-      "First non-Iranian tanker transits Hormuz with AIS on",
-      "EU rebuffs Trump — won't expand naval ops",
-      "Iran reaches out to Trump envoy; Trump refuses talks",
-      "IRGC warns will strike US-linked industrial facilities",
-      "IRGC: most weapons cache intact, modern missiles not yet used",
-      "Israel begins ground ops in southern Lebanon",
-      "Dubai airport hit by drone, flights suspended",
-      "LME halts ALL contract trading — systemic stress"
-    ],
-    fv: {
-      wti:    { s1: 68,   s2: 86,   s3: 115,  s4: 80   },
-      brent:  { s1: 71,   s2: 90,   s3: 120,  s4: 84   },
-      gold:   { s1: 4700, s2: 5200, s3: 6000, s4: 5500 },
-      spx:    { s1: 7000, s2: 6500, s3: 5800, s4: 6200 },
-      spread: { s1: 2,    s2: 10,   s3: 22,   s4: 6    }
-    }
-  },
-  {
-    day: 18, date: "Mar 17", label: "Day 18",
-    s1: 2, s2: 48, s3: 32, s4: 18,
-    wti: 96.21, brent: 95.02, gold: 5008.2, spx: 6716.09, spread: 15.34,
-    events: [
-      "Trump calls Iran a 'paper tiger'; demands NATO + China reopen Hormuz",
-      "Germany/EU flatly reject — 'this war has nothing to do with NATO'",
-      "Iran parliament: won't accept ceasefire until enemy shows regret",
-      "Larijani + Basij chief confirmed killed — IDF hit security council meeting",
-      "Lebanon ground invasion deepens; Netanyahu signals indefinite occupation",
-      "Drone strike ignites Fujairah oil terminal (UAE) — energy infra targeting widens",
-      "India deploys two naval task forces to escort ships through Hormuz",
-      "Top US counterterror official Joe Kent resigns — calls Iran 'not a threat'",
-      "Trump casts doubt on China visit over Hormuz standoff"
-    ],
-    fv: {
-      wti:    { s1: 68,   s2: 88,   s3: 118,  s4: 82   },
-      brent:  { s1: 71,   s2: 93,   s3: 123,  s4: 86   },
-      gold:   { s1: 4700, s2: 5200, s3: 6100, s4: 5500 },
-      spx:    { s1: 7000, s2: 6500, s3: 5800, s4: 6200 },
-      spread: { s1: 2,    s2: 10,   s3: 22,   s4: 6    }
-    }
-  },
-  {
-    day: 19, date: "Mar 18", label: "Day 19",
-    s1: 1, s2: 40, s3: 40, s4: 19,
-    wti: 96.32, brent: 98.16, gold: 4896.2, spx: 6624.70, spread: 14.49,
-    events: [
-      "Israel strikes South Pars gas field — Iran retaliates against Ras Laffan, Saudi Arabia, UAE energy infra",
-      "Trump publicly disavows South Pars strike: 'Knew nothing about this particular attack'",
-      "Gold -$112 (-2.2%) into FOMC — dollar safe-haven bid absorbs war premium; paper flush before rate decision",
-      "Iran kills 2 in Ramat Gan — first Israeli civilian deaths from Iranian ballistic missiles",
-      "US drops 5,000-lb bunker busters on Hormuz coastline missile sites — new weapon, new phase",
-      "Israel kills Esmail Khatib (intelligence minister) — decapitation campaign accelerating",
-      "Mojtaba Khamenei rejects peace proposals through 2 intermediaries: 'Not the right time'",
-      "Iran yuan-for-Hormuz active — bilateral deals with India and China bypass dollar system"
-    ],
-    fv: {
-      wti:    { s1: 65,   s2: 90,   s3: 125,  s4: 88   },
-      brent:  { s1: 68,   s2: 94,   s3: 130,  s4: 92   },
-      gold:   { s1: 4700, s2: 5200, s3: 6100, s4: 5500 },
-      spx:    { s1: 7100, s2: 6500, s3: 5700, s4: 6000 },
-      spread: { s1: 2,    s2: 11,   s3: 24,   s4: 8    }
-    }
-  },
-  {
-    day: 20, date: "Mar 19", label: "Day 20",
-    s1: 2, s2: 40, s3: 38, s4: 20,
-    wti: 96.14, brent: 98.46, gold: 4605.7, spx: 6606.49, spread: 14.18,
-    events: [
-      "Netanyahu press conference: 'Iran can no longer enrich uranium or produce ballistic missiles' — claims campaign achieved core objectives",
-      "Netanyahu: war will end 'faster than people think' — no schedule given; Iran 'weaker than ever'",
-      "Netanyahu pledges no further attacks on Iranian energy infra — markets interpret as de-escalation; oil sells off 3% from intraday high",
-      "Brent spikes to $115 intraday on Gulf energy infra strikes; closes below $100 — intraday reversal of $17",
-      "Iran retaliates: ballistic missiles hit Haifa Bazan oil refinery — cluster bomb fragment confirmed; energy infra war now bilateral",
-      "US F-35 damaged by Iranian fire mid-mission over Iran — emergency landing at US air base in Middle East",
-      "US-Israel divergence: Trump told Netanyahu to stop energy infra strikes; confirms US 'knew nothing' about South Pars",
-      "UK deploys military planners to US Central Command — Hormuz coalition forming but no European combat role",
-      "Gold -$290 (-5.9%) — FOMC hawkish dot plot (zero 2026 cuts) + war-premium washout on Netanyahu signal; possible margin liquidation"
-    ],
-    fv: {
-      wti:    { s1: 62,   s2: 85,   s3: 125,  s4: 80   },
-      brent:  { s1: 65,   s2: 88,   s3: 132,  s4: 84   },
-      gold:   { s1: 4700, s2: 5200, s3: 6000, s4: 5500 },
-      spx:    { s1: 7200, s2: 6500, s3: 5700, s4: 6000 },
-      spread: { s1: 2,    s2: 10,   s3: 24,   s4: 8    }
-    }
+  s4:{
+    name:'S4 — full war', sub:'Red Sea + Gulf attacks. Recession.',
+    dot:'#b91c1c', prob_color:'#b91c1c',
+    oil:'$140–160',
+    koru:{range:'−60→−80%', mid:-70},
+    epv:{range:'+70→+110%', mid:90},
+    mech:'<strong>KORU gap risk dominant.</strong> Iran retaliatory list (Samref, Jubail, Al Hosn) is the S4 trigger. If Houthis activate Red Sea = full Gulf isolation. EPV at 60% wt is the survival mechanism. Watch KRW/USD erosion.'
   }
-];
-
-const C = {
-  bg: "#ffffff", surface: "#f4f6f9", surfaceAlt: "#eaeff5",
-  border: "#d5dce6", text: "#0f1a2e", textMid: "#3a4a63",
-  textMuted: "#556275", textDim: "#6b7589",
-  accent: "#1a56db", accentLight: "#e8eefb",
-  s1: "#1a56db", s2: "#475569", s3: "#7c8da3", s4: "#a8b5c4",
-  up: "#15803d", down: "#b91c1c", warn: "#b45309", brent: "#9a3412"
 };
 
-const SCENARIOS = [
-  { key: "s1", tag: "S1", label: "Swift resolution",   color: C.s1 },
-  { key: "s2", tag: "S2", label: "Degraded attrition", color: C.s2 },
-  { key: "s3", tag: "S3", label: "Escalation",         color: C.s3 },
-  { key: "s4", tag: "S4", label: "Regime collapse",    color: C.s4 },
-];
+var sc2={
+  s2a:{oil:'~$80–85', koru:{range:'+40→+60%',mid:50}, epv:{range:'−18→−28%',mid:-23},
+    mech:'ECB resumes hikes immediately at resolution — caps VGK at +12–18%. KORU +50%×40% = +20%; EPV −23%×60% = −14%. Net positive.'},
+  s2b:{oil:'~$75–82', koru:{range:'+25→+40%',mid:32.5}, epv:{range:'−12→−20%',mid:-16},
+    mech:'KORU recovery already partially priced in Phase 1. Smaller increment. EPV bleed smaller — less distance for VGK. Softest path but still additive.'},
+  s3:{oil:'~$80–88', koru:{range:'+55→+85%',mid:70}, epv:{range:'−28→−42%',mid:-35},
+    mech:'<strong>Biggest KORU snap-back.</strong> South Pars deepens Phase 1 KORU trough — amplifying Phase 2 move. <strong>Rotate EPV → KORU at ceasefire signal.</strong>'},
+  s4:{oil:'~$85–95', koru:{range:'+70→+100%',mid:85}, epv:{range:'−35→−50%',mid:-43},
+    mech:'Largest KORU move from deepest trough. Largest EPV reversal — but from largest Phase 1 gain (+90%). Combined strongly positive. Requires surviving Phase 1 intact.'}
+};
 
-const MARKETS = [
-  { key: "wti",    label: "WTI CRUDE (CL1)",     color: C.warn,  fmt: v => `$${v.toFixed(2)}` },
-  { key: "brent",  label: "BRENT JUNE (CON6)",   color: C.brent, fmt: v => `$${v.toFixed(2)}` },
-  { key: "gold",   label: "GOLD",                color: C.accent,fmt: v => `$${v.toLocaleString(undefined,{minimumFractionDigits:1,maximumFractionDigits:1})}` },
-  { key: "spx",    label: "S&P 500",             color: C.accent,fmt: v => v.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) },
-  { key: "spread", label: "CLK6–CLV6 SPREAD",   color: C.textMid,fmt: v => `$${v.toFixed(2)}` },
-];
+var meta={
+  s2a:{scen:'S2a → S5',desc:'Hot simmer → resolution',dot:'#b45309'},
+  s2b:{scen:'S2b → S5',desc:'Slow simmer → resolution',dot:'#1a56db'},
+  s3:{scen:'S3 → S5',desc:'Prolonged war → ceasefire',dot:'#c2410c'},
+  s4:{scen:'S4 → S5',desc:'Full war → end of conflict',dot:'#b91c1c'}
+};
 
-const FV_ROWS = [
-  { asset: "WTI",       fvKey: "wti",    spotKey: "wti",    unit: "$",  dec: 0, isEq: false },
-  { asset: "Brent",     fvKey: "brent",  spotKey: "brent",  unit: "$",  dec: 0, isEq: false },
-  { asset: "Gold",      fvKey: "gold",   spotKey: "gold",   unit: "$",  dec: 0, isEq: false },
-  { asset: "S&P 500",   fvKey: "spx",    spotKey: "spx",    unit: "",   dec: 0, isEq: true  },
-  { asset: "CLK6–CLV6", fvKey: "spread", spotKey: "spread", unit: "$",  dec: 1, isEq: false },
-];
+function wtdMid(s,data){return data[s].koru.mid*0.4+data[s].epv.mid*0.6;}
+function fmt(v,dp){dp=dp===undefined?1:dp;return(v>=0?'+':'')+v.toFixed(dp)+'%';}
+function cls(v){return v>0.5?'pos':v<-0.5?'neg':'mix';}
+function colorVal(v){return v>=0?'#15803d':'#b91c1c';}
 
-let state = { idx: DATA.length - 1, showPct: false };
-
-function wtdFV(d, fvRow) {
-  return (d.s1/100)*fvRow.s1 + (d.s2/100)*fvRow.s2 + (d.s3/100)*fvRow.s3 + (d.s4/100)*fvRow.s4;
+function setTs(){
+  var d=new Date();
+  document.getElementById('ts').textContent=
+    d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'})+
+    ' · '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
 }
+setTs();setInterval(setTs,60000);
 
-function fmtP(v, unit, dec) {
-  if (unit === "$") return v >= 1000 ? `$${v.toLocaleString(undefined,{maximumFractionDigits:dec||0})}` : `$${v.toFixed(dec||0)}`;
-  return v.toLocaleString(undefined,{maximumFractionDigits:dec||0});
-}
-
-function fmtPct(sv, spot) {
-  if (!spot) return "—";
-  const p = ((sv - spot) / spot) * 100;
-  return `${p >= 0 ? "+" : ""}${p.toFixed(1)}%`;
-}
-
-function chgColor(v, isEq) {
-  if (Math.abs(v) < 0.005) return C.textDim;
-  if (isEq) return v > 0 ? C.up : C.down;
-  return v > 0 ? C.up : C.down;
-}
-
-function gapInfo(wfv, spot) {
-  if (!spot) return { text: "—", color: C.textDim };
-  const p = ((wfv - spot) / spot) * 100;
-  if (Math.abs(p) < 3) return { text: "Fair", color: C.textMuted };
-  return p > 0 ? { text: "Cheap", color: C.up } : { text: "Rich", color: C.down };
-}
-
-function pctCol(sv, spot, isEq) {
-  if (!spot) return C.textDim;
-  const d = sv - spot;
-  if (Math.abs(d / spot) < 0.005) return C.textMuted;
-  return d > 0 ? (isEq ? C.up : C.up) : (isEq ? C.down : C.down);
-}
-
-function sparkSVG(data, key, color, w, h) {
-  const vals = data.map(d => d[key]);
-  if (vals.length < 2) return "";
-  const mn = Math.min(...vals), mx = Math.max(...vals), rng = mx - mn || 1;
-  const pts = vals.map((v, i) =>
-    `${(i/(vals.length-1))*w},${h - 3 - ((v-mn)/rng)*(h-6)}`
-  ).join(" ");
-  const lx = w, ly = h - 3 - ((vals[vals.length-1]-mn)/rng)*(h-6);
-  return `<svg width="${w}" height="${h}" style="display:block">
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" opacity="0.7"/>
-    <circle cx="${lx}" cy="${ly}" r="2.5" fill="${color}"/>
-  </svg>`;
-}
-
-function probEvoSVG(activeIdx) {
-  const w = 700, h = 160, pad = 4, uh = h - pad*2, n = DATA.length;
-  const order = ["s4","s3","s2","s1"];
-  let cum = DATA.map(() => 0);
-  let paths = order.map(s => {
-    const points = DATA.map((d, i) => {
-      const x = n === 1 ? w/2 : (i/(n-1))*w;
-      const yb = pad + uh - (cum[i]/100)*uh;
-      const yt = pad + uh - ((cum[i]+d[s])/100)*uh;
-      cum[i] += d[s];
-      return { x, yt, yb };
-    });
-    const top = points.map((p,i) => `${i===0?"M":"L"} ${p.x} ${p.yt}`).join(" ");
-    const bot = [...points].reverse().map(p => `L ${p.x} ${p.yb}`).join(" ");
-    const color = C[s];
-    return `<path d="${top} ${bot} Z" fill="${color}" opacity="0.45"/>`;
+['s2a','s2b','s3','s4'].forEach(function(s){
+  document.getElementById('sl-'+s).addEventListener('input',function(){
+    probs[s]=+this.value;
+    document.getElementById('lbl-'+s).textContent=this.value+'%';
+    updateAll();
   });
-  const sx = (activeIdx/(n-1))*w;
-  paths.push(`<line x1="${sx}" y1="0" x2="${sx}" y2="${h}" stroke="${C.accent}" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>`);
-  return `<svg width="100%" height="160" viewBox="0 0 700 160" preserveAspectRatio="none">${paths.join("")}</svg>`;
+});
+document.getElementById('notional').addEventListener('input',updateAll);
+
+function buildRows(bodyId, data, hasMech){
+  var n=parseFloat(document.getElementById('notional').value)||10;
+  var html='';
+  ['s2a','s2b','s3','s4'].forEach(function(s){
+    var d=data[s];
+    var wt=wtdMid(s,data);
+    var portPL=wt/100*n;
+    var scenER=portPL*probs[s]/100;
+    var rowCls='row-'+s;
+    // data row
+    html+='<tr class="'+rowCls+' data-row">';
+    html+='<td class="sc-name-cell" style="padding:10px 10px 4px"><div class="s-cell"><span class="s-dot" style="background:'+d.dot+';margin-top:3px"></span><div><div class="s-name">'+d.name+'</div><div class="s-sub">'+d.sub+'</div></div></div></td>';
+    html+='<td style="padding:10px 10px 4px"><span class="m" style="font-size:13px;font-weight:500;color:'+d.prob_color+'">'+probs[s]+'%</span></td>';
+    html+='<td style="padding:10px 10px 4px;font-size:11px;color:#556275">'+(d.oil||'—')+'</td>';
+    html+='<td style="padding:10px 10px 4px"><div class="ret-range">'+d.koru.range+'</div><div class="ret-mid '+cls(d.koru.mid)+'">'+fmt(d.koru.mid)+'</div></td>';
+    html+='<td style="padding:10px 10px 4px"><div class="ret-range">'+d.epv.range+'</div><div class="ret-mid '+cls(d.epv.mid)+'">'+fmt(d.epv.mid)+'</div></td>';
+    html+='<td style="padding:10px 10px 4px"><div class="ret-mid '+cls(wt)+'">'+fmt(wt)+'</div><div class="ret-range">weighted mid</div></td>';
+    html+='<td style="padding:10px 10px 4px"><div class="ret-mid" style="color:'+colorVal(portPL)+'">'+fmt(portPL)+'</div><div class="ret-range">of portfolio</div></td>';
+    html+='<td style="padding:10px 10px 4px"><div class="ret-mid '+cls(scenER)+'">'+fmt(scenER,2)+'</div><div class="ret-range">scenario ER</div></td>';
+    html+='</tr>';
+    // mechanic row — spans all columns, light bg pill
+    if(hasMech && d.mech){
+      html+='<tr class="'+rowCls+' mech-row">';
+      html+='<td colspan="8" style="padding:0 10px 10px"><span class="mech-span">'+d.mech+'</span></td>';
+      html+='</tr>';
+    }
+  });
+  document.getElementById(bodyId).innerHTML=html;
 }
 
-function render() {
-  const { idx, showPct } = state;
-  const cur = DATA[idx];
-  const prev = idx > 0 ? DATA[idx-1] : null;
-  const d1 = DATA[0];
-  const app = document.getElementById("app");
+function updateAll(){
+  var n=parseFloat(document.getElementById('notional').value)||10;
 
-  // header
-  let html = `
-  <div class="header">
-    <div>
-      <div class="header-label mono">THRESHER FIXED</div>
-      <div class="header-title">Operation Epic Fury</div>
-      <div class="header-sub">Scenario tracker — Unstable Equilibria war room</div>
-    </div>
-    <div class="day-badge">
-      <div class="day-label mono">DAY</div>
-      <div class="day-num mono">${cur.day}</div>
-    </div>
-  </div>`;
+  // sizing table
+  var kCap=n*0.4,eCap=n*0.6,kGN=kCap*3,eGN=eCap*2,totGN=kGN+eGN;
+  document.getElementById('sz-koru-cap').textContent=kCap.toFixed(1)+'%';
+  document.getElementById('sz-epv-cap').textContent=eCap.toFixed(1)+'%';
+  document.getElementById('sz-tot-cap').textContent=n.toFixed(1)+'%';
+  document.getElementById('sz-koru-gn').textContent=kGN.toFixed(1)+'%';
+  document.getElementById('sz-epv-gn').textContent=eGN.toFixed(1)+'%';
+  document.getElementById('sz-tot-gn').textContent=totGN.toFixed(1)+'%';
+  document.getElementById('equal-note').style.display=Math.abs(kGN-eGN)<0.01?'block':'none';
+  document.getElementById('er-p1-sub').textContent='on '+n+'% notional';
 
-  // timeline
-  html += `<div class="timeline">`;
-  const lastIdx = DATA.length - 1;
-  DATA.forEach((d, i) => {
-    html += `<button class="tl-btn mono${i===idx?" active":""}${i===lastIdx?" today":""}" onclick="setIdx(${i})">
-      ${d.label}${i===lastIdx?"<span class=\"today-pip\">TODAY</span>":""}<div class="tl-date">${d.date}</div>
-    </button>`;
-  });
-  html += `</div>`;
+  // prob total
+  var total=Object.values(probs).reduce(function(a,b){return a+b;},0);
+  var valid=total===100;
+  document.getElementById('total-prob').textContent=total+'%';
+  document.getElementById('total-prob').style.color=valid?'#0f1a2e':'#b91c1c';
+  document.getElementById('prob-warn').style.display=valid?'none':'inline';
+  document.getElementById('prob-ok').style.display=valid?'inline':'none';
 
-  // scenario cards
-  html += `<div class="sc-grid">`;
-  SCENARIOS.forEach(s => {
-    const p = cur[s.key];
-    const pp = prev ? prev[s.key] : null;
-    const delta = pp !== null ? p - pp : null;
-    const deltaHtml = (delta !== null && delta !== 0)
-      ? `<span class="sc-delta mono" style="color:${delta>0?C.up:C.down}">${delta>0?"+":""}${delta}pp</span>`
-      : "";
-    html += `<div class="sc-card">
-      <div class="sc-stripe" style="background:${s.color}"></div>
-      <div class="sc-tag mono">${s.tag}</div>
-      <div><span class="sc-prob mono">${p}%</span>${deltaHtml}</div>
-      <div class="sc-label">${s.label}</div>
-    </div>`;
-  });
-  html += `</div>`;
+  // build table rows
+  buildRows('p1-body', sc, true);
+  buildRows('p2-body', sc2, true);
 
-  // prob bar
-  html += `<div class="prob-bar">`;
-  ["s1","s2","s3","s4"].forEach(s => {
-    html += `<div class="prob-seg" style="width:${cur[s]}%;background:${C[s]}"></div>`;
-  });
-  html += `</div>`;
+  // Phase 1 ER totals
+  var p1ERTotal=Object.keys(probs).reduce(function(a,s){return a+wtdMid(s,sc)/100*n*probs[s]/100;},0);
+  var p2ERTotal=Object.keys(probs).reduce(function(a,s){return a+wtdMid(s,sc2)/100*n*probs[s]/100;},0);
+  var erEl=document.getElementById('er-p1-total');
+  erEl.textContent=fmt(p1ERTotal,2);
+  erEl.className='m '+(p1ERTotal>=0?'pos':'neg');
+  var er2El=document.getElementById('er-p2-total');
+  er2El.textContent=fmt(p2ERTotal,2);
+  er2El.className='m '+(p2ERTotal>=0?'pos':'neg');
 
-  // prob evolution chart
-  html += `<div class="prob-evo">
-    <div class="section-head mono">PROBABILITY EVOLUTION</div>
-    <div class="prob-chart-wrap">${probEvoSVG(idx)}</div>
-    <div class="prob-dates">`;
-  DATA.forEach(d => {
-    const lbl = d.date.replace("Feb ","2/").replace("Mar ","3/");
-    html += `<span class="prob-date-label mono" style="width:${100/DATA.length}%">${lbl}</span>`;
-  });
-  html += `</div>
-    <div class="legend">`;
-  SCENARIOS.forEach(s => {
-    html += `<div class="legend-item"><div class="legend-dot" style="background:${s.color}"></div><span class="mono">${s.tag}</span></div>`;
-  });
-  html += `</div></div>`;
+  // ER cards
+  var evK=Object.keys(probs).reduce(function(a,s){return a+probs[s]/100*sc[s].koru.mid*0.4;},0);
+  var evE=Object.keys(probs).reduce(function(a,s){return a+probs[s]/100*sc[s].epv.mid*0.6;},0);
+  var evT=evK+evE;
+  var kEl=document.getElementById('er-koru');kEl.textContent=fmt(evK);kEl.className='m er-val '+cls(evK);
+  var eEl=document.getElementById('er-epv');eEl.textContent=fmt(evE);eEl.className='m er-val '+cls(evE);
+  document.getElementById('er-p1').textContent=fmt(evT/100*n);
+  document.getElementById('er-p1').className='m er-val '+(evT>=0?'pos':'neg');
 
-  // cross-asset levels
-  html += `<div class="section-head mono">CROSS-ASSET LEVELS</div>
-  <div class="markets-grid">`;
-  MARKETS.forEach(m => {
-    const cv = cur[m.key];
-    const d1v = d1[m.key];
-    const chg1d = prev ? ((cv - prev[m.key]) / prev[m.key] * 100) : null;
-    const chgD1 = ((cv - d1v) / d1v * 100);
-    const c1d = chg1d !== null ? (Math.abs(chg1d) < 0.1 ? C.textDim : chg1d > 0 ? C.up : C.down) : null;
-    const cD1 = Math.abs(chgD1) < 0.1 ? C.textDim : chgD1 > 0 ? C.up : C.down;
-    const spark = sparkSVG(DATA.slice(0, idx+1), m.key, m.color, 70, 36);
-    html += `<div class="mkt-card">
-      <div class="mkt-inner">
-        <div>
-          <div class="mkt-label mono">${m.label}</div>
-          <div class="mkt-value mono">${m.fmt(cv)}</div>
-          <div class="mkt-changes">
-            ${chg1d !== null ? `<span class="chg-badge mono" style="color:${c1d}">1d: ${chg1d>=0?"+":""}${chg1d.toFixed(1)}%</span>` : ""}
-            <span class="chg-badge mono" style="color:${cD1}">D1: ${chgD1>=0?"+":""}${chgD1.toFixed(1)}%</span>
-          </div>
-        </div>
-        ${spark}
-      </div>
-    </div>`;
-  });
-  html += `</div>`;
+  // combined ER (P1 + P2)
+  var combinedOnNotional=Object.keys(probs).reduce(function(a,s){
+    return a+probs[s]/100*(wtdMid(s,sc)+wtdMid(s,sc2));
+  },0);
+  var portContrib=combinedOnNotional/100*n;
 
-  // FV table
-  html += `<div class="fv-header">
-    <span class="section-head mono" style="margin-bottom:0">SCENARIO FAIR VALUES</span>
-    <button class="pct-btn mono${showPct?" active":""}" onclick="togglePct()">${showPct?"% from spot":"Absolute"}</button>
-  </div>
-  <div class="fv-wrap"><div class="fv-scroll">
-  <table>
-    <thead><tr>
-      <th></th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>Wtd FV</th><th>Spot</th><th>Gap</th>
-    </tr></thead>
-    <tbody>`;
+  var bigEl=document.getElementById('er-combined-val');
+  bigEl.textContent=fmt(combinedOnNotional);
+  bigEl.style.color=colorVal(combinedOnNotional);
+  var portEl=document.getElementById('er-port-val');
+  portEl.textContent=fmt(portContrib,2);
+  portEl.style.color=colorVal(portContrib);
+  document.getElementById('er-port-sub').textContent='of total portfolio ('+n+'% notional)';
 
-  FV_ROWS.forEach((row, ri) => {
-    const fvData = cur.fv[row.fvKey];
-    const spot = cur[row.spotKey];
-    const wfv = wtdFV(cur, fvData);
-    const gap = gapInfo(wfv, spot);
-    const isLast = ri === FV_ROWS.length - 1;
-
-    const cellVal = v => showPct ? fmtPct(v, spot) : fmtP(v, row.unit, row.dec);
-    const cellCol = v => showPct ? pctCol(v, spot, row.isEq) : C.textMid;
-
-    const wtdDisplay = showPct ? fmtPct(wfv, spot) : fmtP(Math.round(wfv), row.unit, row.dec);
-    const wtdColor = showPct ? pctCol(wfv, spot, row.isEq) : C.text;
-
-    html += `<tr>
-      <td>${row.asset}</td>
-      ${["s1","s2","s3","s4"].map(s => `<td style="color:${cellCol(fvData[s])}">${cellVal(fvData[s])}</td>`).join("")}
-      <td style="color:${wtdColor};font-weight:500">${wtdDisplay}</td>
-      <td style="color:${C.textMuted}">${spot ? fmtP(spot, row.unit, row.dec) : "—"}</td>
-      <td style="color:${gap.color};font-weight:500">${gap.text}</td>
-    </tr>`;
-  });
-
-  html += `</tbody></table></div></div>`;
-
-  // events
-  html += `<div class="section-head mono">KEY DEVELOPMENTS — ${cur.label.toUpperCase()} (${cur.date.toUpperCase()})</div>
-  <div class="events-wrap">`;
-  cur.events.forEach((evt, i) => {
-    html += `<div class="evt-row">
-      <span class="evt-num mono">${String(i+1).padStart(2,"0")}</span>
-      <span class="evt-text">${evt}</span>
-    </div>`;
-  });
-  html += `</div>`;
-
-  // footer
-  html += `<div class="footer mono">
-    <span>Not investment advice. Scenario analysis for portfolio risk management.</span>
-    <span>thresherfixed.com</span>
-  </div>`;
-
-  app.innerHTML = html;
+  // combined path cards
+  var bestS=Object.keys(meta).reduce(function(b,s){
+    return(wtdMid(s,sc)+wtdMid(s,sc2))>(wtdMid(b,sc)+wtdMid(b,sc2))?s:b;
+  },'s2a');
+  document.getElementById('path-grid').innerHTML=Object.keys(meta).map(function(s){
+    var p1=wtdMid(s,sc),p2=wtdMid(s,sc2),combined=p1+p2,port=combined/100*n,best=s===bestS;
+    return '<div class="path-card'+(best?' best':'')+'">'+
+      '<div class="path-top">'+
+        '<span class="s-dot" style="background:'+meta[s].dot+';margin-top:3px"></span>'+
+        '<div class="path-meta"><div class="m path-scen">'+meta[s].scen+'</div><div class="path-desc">'+meta[s].desc+'</div></div>'+
+        (best?'<span class="m best-badge">best path</span>':'')+
+        '<div class="path-total m '+(combined>=0?'pos':'neg')+'">'+fmt(combined)+'</div>'+
+      '</div>'+
+      '<div class="m path-breakdown">'+
+        '<span>Phase 1: <strong style="color:#0f1a2e">'+fmt(p1)+'</strong></span>'+
+        '<span>Phase 2 add: <strong style="color:#0f1a2e">'+fmt(p2)+'</strong></span>'+
+        '<span style="color:#15803d;font-weight:500">Portfolio: '+fmt(port)+'</span>'+
+      '</div></div>';
+  }).join('');
 }
 
-function setIdx(i) {
-  state.idx = i;
-  render();
-  const tl = document.querySelector('.timeline');
-  const active = tl && tl.querySelector('.tl-btn.active');
-  if (active) active.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'nearest' });
+function showTab(id,btn){
+  ['p1','p2','combined'].forEach(function(t){
+    document.getElementById('tab-'+t).style.display=t===id?'block':'none';
+  });
+  document.querySelectorAll('.tb').forEach(function(b){b.classList.remove('a');});
+  btn.classList.add('a');
 }
 
-function togglePct() {
-  state.showPct = !state.showPct;
-  render();
-}
-
-render();
-// Scroll timeline to show active (today) tab
-setTimeout(() => {
-  const tl = document.querySelector('.timeline');
-  const active = tl && tl.querySelector('.tl-btn.active');
-  if (active) active.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
-}, 0);
+updateAll();
 </script>
 </body>
 </html>
