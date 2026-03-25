@@ -322,7 +322,7 @@ const DATA = [
   {
     day: 24, date: "Mar 23", label: "Day 24",
     s1: 18, s2: 47, s3: 28, s4: 7,
-    wti: 88.13, brent: 91.68, gold: 4439.5, spx: 6538, spread: 12.34,
+    wti: 88.13, brent: 91.68, gold: 4439.5, spx: 6560, spread: 12.34,
     events: [
       "Trump posts 5-day pause on Iranian energy strikes — Kushner + Witkoff confirm Sunday night meeting with senior Iranian official",
       "Iran parliament speaker Ghalibaf named as Tehran's interlocutor — first confirmed Iranian negotiating contact since war began",
@@ -345,25 +345,50 @@ const DATA = [
   },
   {
     day: 25, date: "Mar 24", label: "Day 25",
-    s1: 25, s2: 48, s3: 22, s4: 5,
-    wti: 86.50, brent: 89.90, gold: 4448.0, spx: 6542, spread: 11.60,
+    s1: 32, s2: 46, s3: 17, s4: 5,
+    wti: 92.35, brent: 95.60, gold: 4434.1, spx: 6537, spread: 12.97,
     events: [
-      "Iran offers 'present' as good-faith gesture — Trump confirms it relates to Hormuz energy flows",
-      "Thai ship transits Hormuz — first confirmed non-Iranian transit since blockade began; partial reopening signal",
-      "Trump: 'We\'re in negotiations right now' — Witkoff, Kushner, Rubio, Vance all confirmed as active negotiators",
-      "Trump: 'They\'re talking to us and talking sense... they want to make a deal so badly, you have no idea'",
-      "Nuclear disarmament remains core US condition — Iran 'in agreement on some parameters'",
-      "Pentagon simultaneously deploys more ground troops to region — military pressure maintained alongside diplomacy",
-      "Trump optimism vs Pentagon buildup — classic Trump negotiating posture, not necessarily contradictory",
-      "S1 probability rising: Ghalibaf confirmed interlocutor, Hormuz partial opening, full US cabinet engaged",
-      "Deal-breaker watch: Israel still hitting Tehran independently — any Israeli escalation could collapse talks before March 28"
+      "US delivers formal 15-point ceasefire proposal to Iran via Pakistan intermediaries — nuclear dismantlement, sanctions relief, Hormuz, missile limits, IAEA access",
+      "Iran announces 'non-hostile' vessels may transit Hormuz — partial reopening; ~3,200 ships still stalled; Iran charging for passage",
+      "Pakistan offers to host in-person US-Iran talks — possibly Friday March 28, same day as 5-day strike deadline",
+      "Trump: Iran's 'present' related to Hormuz flows — 'they gave it and said they would: we\'re dealing with the right people'",
+      "Gold +3.8%, Silver +5.2% — oil falling = less inflation = Fed can cut = dollar softens = CB floor thesis reasserts",
+      "Oil -4% (WTI $84.60), Brent -6% ($86.10) — 4th major oil reversal of conflict; WTI now below pre-war level",
+      "Hegseth + Joint Chiefs 'quite disappointed' by ceasefire push — only two people opposed, Trump overruled them",
+      "Israel surprised by US 15-point plan; IDF war plan 'unchanged' — independent Israeli strikes remain deal-breaker risk",
+      "Iran military still active: Kuwait airport fire, missile waves at Israel, 13 US KIA / 290 injured total",
+      "Egyptian official: 15-point plan is 'like a comprehensive deal' — comparable complexity to Gaza 20-point framework; weeks of negotiation required even if framework agreed"
+    ],
+    fv: {
+      wti:    { s1: 50,   s2: 65,   s3: 100,  s4: 68   },
+      brent:  { s1: 53,   s2: 69,   s3: 105,  s4: 72   },
+      gold:   { s1: 4450, s2: 4950, s3: 5700, s4: 5500 },
+      spx:    { s1: 7500, s2: 6900, s3: 5900, s4: 6100 },
+      spread: { s1: 0,    s2: 4,    s3: 15,   s4: 4    }
+    }
+  },
+  {
+    day: 26, date: "Mar 25", label: "Day 26",
+    s1: 28, s2: 46, s3: 21, s4: 5,
+    wti: 91.32, brent: 93.72, gold: 4549.6, spx: 6575, spread: 12.32,
+    events: [
+      "IRGC military spokesperson: 'Someone like us will never come to terms with someone like you. Not now, not ever' — hardest public rejection yet",
+      "Iran fires missiles at Israel, Kuwait, Jordan and Bahrain bases — Saudi Arabia destroys 19 Iranian drones targeting Eastern Province",
+      "AP: Iran formally rejected the 15-point ceasefire proposal — skeptical after past US negotiations ended in military action",
+      "Gold +2.6% to $4,550 despite IRGC rejection — market reading military posture as separate from diplomatic track; CB floor bid intact",
+      "Oil recovers +3.6% (WTI $91.32) — ceasefire not imminent, war premium partially restored after 3-day selloff",
+      "82nd Airborne + 5,000 Marines deploying to region — Pentagon building military option alongside diplomatic track simultaneously",
+      "Backchannel intact: Witkoff has direct line to Pakistan Army Chief Gen. Munir; Pakistan-hosted talks still possible Thursday-Friday",
+      "Iran UN mission: Hormuz requires coordination with Iranian authorities and payment — ~3,200 ships still stalled",
+      "Trump: 'terms not good enough yet' — March 28 deadline almost certainly extends again",
+      "Key read: IRGC = military track (hard no); Ghalibaf/Araghchi = diplomatic track (back-channel open) — Iran speaking with two voices"
     ],
     fv: {
       wti:    { s1: 52,   s2: 68,   s3: 105,  s4: 70   },
       brent:  { s1: 55,   s2: 72,   s3: 110,  s4: 74   },
       gold:   { s1: 4450, s2: 4950, s3: 5700, s4: 5500 },
-      spx:    { s1: 7500, s2: 6800, s3: 5800, s4: 6000 },
-      spread: { s1: 0,    s2: 5,    s3: 16,   s4: 4    }
+      spx:    { s1: 7500, s2: 6900, s3: 5800, s4: 6000 },
+      spread: { s1: 0,    s2: 5,    s3: 17,   s4: 4    }
     }
   }
 ];
