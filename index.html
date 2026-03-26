@@ -369,25 +369,49 @@ const DATA = [
   },
   {
     day: 26, date: "Mar 25", label: "Day 26",
-    s1: 28, s2: 46, s3: 21, s4: 5,
-    wti: 91.32, brent: 93.72, gold: 4549.6, spx: 6575, spread: 12.32,
+    s1: 22, s2: 45, s3: 26, s4: 7,
+    wti: 90.32, brent: 92.93, gold: 4585.5, spx: 6578, spread: 11.83,
     events: [
-      "IRGC military spokesperson: 'Someone like us will never come to terms with someone like you. Not now, not ever' — hardest public rejection yet",
-      "Iran fires missiles at Israel, Kuwait, Jordan and Bahrain bases — Saudi Arabia destroys 19 Iranian drones targeting Eastern Province",
-      "AP: Iran formally rejected the 15-point ceasefire proposal — skeptical after past US negotiations ended in military action",
-      "Gold +2.6% to $4,550 despite IRGC rejection — market reading military posture as separate from diplomatic track; CB floor bid intact",
-      "Oil recovers +3.6% (WTI $91.32) — ceasefire not imminent, war premium partially restored after 3-day selloff",
-      "82nd Airborne + 5,000 Marines deploying to region — Pentagon building military option alongside diplomatic track simultaneously",
-      "Backchannel intact: Witkoff has direct line to Pakistan Army Chief Gen. Munir; Pakistan-hosted talks still possible Thursday-Friday",
-      "Iran UN mission: Hormuz requires coordination with Iranian authorities and payment — ~3,200 ships still stalled",
-      "Trump: 'terms not good enough yet' — March 28 deadline almost certainly extends again",
-      "Key read: IRGC = military track (hard no); Ghalibaf/Araghchi = diplomatic track (back-channel open) — Iran speaking with two voices"
+      "Iran formally rejects 15-point US proposal via Press TV — calls it 'maximalist, unreasonable'; Iran FM Araghchi: 'We do not want a ceasefire. We do not plan on any negotiations'",
+      "Iran issues 5-point counterproposal: end to aggression, war reparations, guarantees against future attacks, end hostilities on all fronts, international recognition of sovereignty over Hormuz — non-starter on all counts",
+      "Iran parliament moves to formalize Hormuz fees and sovereignty — institutionalizing the closure as revenue, not just leverage",
+      "Israel grants immunity to Araghchi and Qalibaf for 5-day period — significant signal diplomacy track is real despite public denials",
+      "Israel speeds up targeting next 48hrs — focusing on arms factories before any ceasefire declared; IDF wants several more weeks of war",
+      "Israel kills IRGC Navy chief Alireza Tangsiri — decapitation campaign continues through talks window",
+      "Kuwait airport fire from Iranian strike — Oman Air cancels regional/European flights until April 15; ADNOC CEO calls Iran strategy 'economic terrorism'",
+      "Gold +3.5% to $4,586 — CB floor bid reasserts; market pricing war continuation over deal collapse",
+      "US 5-day clock expires March 28 — Araghchi rejection and no Islamabad meeting scheduled makes extension near-certain",
+      "Diplomatic structure clarifying: Pakistan + Egypt + Turkey all relaying messages; no direct US-Iran contact; gap between US 15 points and Iran 5 points remains unbridgeable near-term"
     ],
     fv: {
       wti:    { s1: 65,   s2: 72,   s3: 145,  s4: 165  },
       brent:  { s1: 68,   s2: 76,   s3: 149,  s4: 169  },
       gold:   { s1: 4450, s2: 4950, s3: 5700, s4: 5500 },
-      spx:    { s1: 7400, s2: 6400, s3: 5600, s4: 5200 },
+      spx:    { s1: 7600, s2: 6000, s3: 5500, s4: 5100 },
+      spread: { s1: 0,    s2: 5,    s3: 17,   s4: 4    }
+    }
+  },
+  {
+    day: 27, date: "Mar 26", label: "Day 27",
+    s1: 23, s2: 47, s3: 23, s4: 7,
+    wti: 94.48, brent: 95.77, gold: 4409.0, spx: 6455, spread: 14.18,
+    events: [
+      "Trump extends deadline 10 days — talks going 'very well'; pledge to refrain from Iranian energy strikes extended to ~April 7",
+      "Iran shifts from 'no talks' to 'waiting for a response' — first acknowledgment of an exchange; incremental but meaningful",
+      "Iran 5-point counter stands: end aggression + assassinations, no-recurrence guarantees, reparations, end all-front hostilities, Hormuz sovereignty — all non-starters for US/Israel",
+      "Gold -$176 (-3.8%) to $4,409 — TurboQuant flush + Iran beta + dollar bid; $41 above CB structural floor; largest cheap signal of the conflict",
+      "Oil +$4.16 WTI $94.48, Brent $95.77 — war premium reasserts; 10-day extension doesn't reopen Hormuz, just pauses energy strike threat",
+      "QQQ -5% day materialized — NVDA, MU, COHR, LRCX, META all -5% to -8%; TurboQuant + Iran macro + rates triple compression",
+      "CLK6-CLV6 spread back to $14.18 — fully unwound the ceasefire compression from Days 23-25; Hormuz closure intact",
+      "10-day extension is Trump's 4th deadline slip — pattern: threaten, claim progress, extend; elastic clock now pointing to April 7",
+      "Israel still hitting Tehran independently — IDF 48hr acceleration confirmed; war plan unchanged despite US diplomacy track",
+      "Late-day equities partial recovery on extension headline — classic Trump headline bounce; oil did not sell off on same news"
+    ],
+    fv: {
+      wti:    { s1: 65,   s2: 72,   s3: 145,  s4: 165  },
+      brent:  { s1: 68,   s2: 76,   s3: 149,  s4: 169  },
+      gold:   { s1: 4450, s2: 4950, s3: 5700, s4: 5500 },
+      spx:    { s1: 7600, s2: 6000, s3: 5500, s4: 5100 },
       spread: { s1: 0,    s2: 5,    s3: 17,   s4: 4    }
     }
   }
@@ -599,7 +623,7 @@ function render() {
 
   // FV table
   html += `<div class="fv-header">
-    <span class="section-head mono" style="margin-bottom:0">SCENARIO FAIR VALUES</span>
+    <span class="section-head mono" style="margin-bottom:0">SCENARIO FAIR VALUES <span style="font-size:10px;color:#b45309;background:#fffbeb;border:0.5px solid #fde68a;border-radius:3px;padding:2px 6px;margin-left:4px;font-family:var(--font-mono,monospace)">SPX rev. Mar 26: earnings + AI offset · hist. FVs preserved</span></span>
     <button class="pct-btn mono${showPct?" active":""}" onclick="togglePct()">${showPct?"% from spot":"Absolute"}</button>
   </div>
   <div class="fv-wrap"><div class="fv-scroll">
